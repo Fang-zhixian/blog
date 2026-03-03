@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://greedywolf.tech/sitemap-index.xml

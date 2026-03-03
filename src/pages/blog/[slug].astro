@@ -1,0 +1,39 @@
+---
+/**
+ * 文章详情页
+ */
+import BlogPost from '../../components/BlogPost';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+// 生成静态路径
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate || post.data.pubDate).toISOString(),
+  author: {
+    '@type': 'Person',
+    name: '方植贤',
+  },
+};
+---
+
+<BaseLayout title={`${post.data.title} - DESIGNER.BLOG`} description={post.data.description} type="article">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+  <BlogPost client:idle post={post}>
+    <Content />
+  </BlogPost>
+</BaseLayout>

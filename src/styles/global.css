@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Enable dark mode variant */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Dark mode CSS variables */
+:root {
+  --color-bg: #fafafa;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-border: #f3f4f6;
+  --color-card: #ffffff;
+}
+
+.dark {
+  --color-bg: #0f0f0f;
+  --color-text: #fafafa;
+  --color-text-muted: #9ca3af;
+  --color-border: #1f2937;
+  --color-card: #171717;
+}
+
+/* Apply theme colors */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Keep inline code and fenced code blocks visually distinct. */
+.prose :not(pre) > code {
+  @apply bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded text-[0.9em];
+}
+
+.dark .prose :not(pre) > code {
+  @apply bg-gray-800 text-gray-300;
+}
+
+.prose pre {
+  @apply bg-gray-900 text-gray-100 rounded-xl overflow-x-auto my-8;
+}
+
+.prose pre code {
+  @apply bg-transparent text-inherit p-6 block;
+}
+
+.prose pre code span {
+  @apply bg-transparent;
+}

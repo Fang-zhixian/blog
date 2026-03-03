@@ -1,0 +1,30 @@
+---
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import { siteConfig } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  image?: string;
+}
+
+const { title, description, type, image } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={siteConfig.name} />
+    <title>{title}</title>
+    <SEO title={title} description={description} type={type} image={image} />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
