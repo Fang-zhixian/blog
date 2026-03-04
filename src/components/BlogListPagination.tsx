@@ -89,8 +89,8 @@ interface PaginationProps {
 }
 
 const Pagination = ({ currentPage, totalPages, basePath = '/blog' }: PaginationProps) => {
-  const prevPage = currentPage > 2 ? `${basePath}/page/${currentPage - 1}` : (currentPage > 1 ? basePath : null);
-  const nextPage = currentPage < totalPages ? `${basePath}/page/${currentPage + 1}` : null;
+  const prevPage = currentPage > 2 ? `${basePath}/${currentPage - 1}` : (currentPage > 1 ? basePath : null);
+  const nextPage = currentPage < totalPages ? `${basePath}/${currentPage + 1}` : null;
 
   return (
     <div className="flex justify-center items-center gap-4 mt-16">
