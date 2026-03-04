@@ -7,6 +7,8 @@ import { Github, Mail, MapPin, Calendar, Link2, X } from 'lucide-react';
 import Navbar from './layout/Navbar';
 import MobileMenu from './layout/MobileMenu';
 import Footer from './layout/Footer';
+import ThemeToggle from './ThemeToggle';
+import Search from './Search';
 import { siteConfig } from '../config/site';
 
 const NAV_ITEMS = [
@@ -41,7 +43,7 @@ export default function About() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a] font-sans selection:bg-black selection:text-white">
+    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0f0f0f] text-[#1a1a1a] dark:text-[#fafafa] font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       <Navbar
         isScrolled={isScrolled}
         isMobileMenuOpen={isMobileMenuOpen}
@@ -60,7 +62,7 @@ export default function About() {
           transition={{ duration: 0.6 }}
           className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-16"
         >
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-xl flex-shrink-0">
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-xl flex-shrink-0">
             <img
               src="/avatar.png"
               alt="头像"
@@ -70,9 +72,9 @@ export default function About() {
 
           <div className="text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">方植贤</h1>
-            <p className="text-gray-500 text-lg mb-6">全栈开发者 / 设计师</p>
+            <p className="text-gray-500 dark:text-gray-400 text-lg mb-6">全栈开发者 / 设计师</p>
 
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-400">
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-400 dark:text-gray-500">
               <div className="flex items-center gap-2">
                 <MapPin size={16} />
                 <span>中国 · 深圳</span>
@@ -90,9 +92,7 @@ export default function About() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="prose prose-lg prose-gray max-w-none mb-16
-            prose-p:text-gray-600 prose-p:leading-relaxed
-            prose-headings:font-bold prose-headings:tracking-tight"
+          className="prose prose-lg prose-gray dark:prose-invert max-w-none mb-16"
         >
           <h2>关于我</h2>
           <p>
@@ -120,7 +120,7 @@ export default function About() {
             {['React', 'TypeScript', 'Astro', 'Next.js', 'Tailwind CSS', 'Node.js', 'Figma', 'UI/UX'].map((skill) => (
               <span
                 key={skill}
-                className="px-4 py-2 bg-gray-100 text-gray-600 text-sm font-medium rounded-full"
+                className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
               >
                 {skill}
               </span>
@@ -146,7 +146,7 @@ export default function About() {
                   target={isExternal ? '_blank' : undefined}
                   rel={isExternal ? 'noopener noreferrer' : undefined}
                   aria-label={contact.label}
-                  className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                  className="p-3 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   <Icon size={20} />
                 </a>

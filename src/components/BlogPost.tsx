@@ -7,6 +7,8 @@ import { ChevronLeft, Clock, Calendar } from 'lucide-react';
 import Navbar from './layout/Navbar';
 import MobileMenu from './layout/MobileMenu';
 import Footer from './layout/Footer';
+import ThemeToggle from './ThemeToggle';
+import Search from './Search';
 import type { BlogEntry } from '../types/blog';
 
 const NAV_ITEMS = [
@@ -41,7 +43,7 @@ export default function BlogPost({ post, children }: Props) {
   });
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a] font-sans selection:bg-black selection:text-white">
+    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0f0f0f] text-[#1a1a1a] dark:text-[#fafafa] font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       <Navbar
         isScrolled={isScrolled}
         isMobileMenuOpen={isMobileMenuOpen}
@@ -62,7 +64,7 @@ export default function BlogPost({ post, children }: Props) {
         >
           <a
             href="/blog"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-black transition-colors"
+            className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
           >
             <ChevronLeft size={20} />
             <span>返回文章列表</span>
@@ -78,7 +80,7 @@ export default function BlogPost({ post, children }: Props) {
         >
           {/* 标签 */}
           <div className="flex items-center gap-3 mb-6">
-            <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 bg-gray-100 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">
               {post.data.tags?.[0] || '文章'}
             </span>
           </div>
@@ -89,7 +91,7 @@ export default function BlogPost({ post, children }: Props) {
           </h1>
 
           {/* 元信息 */}
-          <div className="flex items-center gap-6 text-gray-400 text-sm">
+          <div className="flex items-center gap-6 text-gray-400 dark:text-gray-500 text-sm">
             <div className="flex items-center gap-2">
               <Calendar size={16} />
               <span>{formattedDate}</span>
@@ -102,21 +104,22 @@ export default function BlogPost({ post, children }: Props) {
         </motion.header>
 
         {/* 分割线 */}
-        <hr className="border-gray-200 mb-12" />
+        <hr className="border-gray-200 dark:border-gray-800 mb-12" />
 
         {/* 文章内容 */}
         <motion.article
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="prose prose-lg prose-gray max-w-none
+          className="prose prose-lg prose-gray dark:prose-invert max-w-none
             prose-headings:font-bold prose-headings:tracking-tight
             prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-            prose-p:text-gray-600 prose-p:leading-relaxed
-            prose-a:text-black prose-a:no-underline prose-a:border-b prose-a:border-black prose-a:hover:text-gray-600 prose-a:hover:border-gray-500
-            prose-pre:bg-gray-900 prose-pre:text-gray-100
-            prose-blockquote:border-l-4 prose-blockquote:border-black prose-blockquote:pl-6 prose-blockquote:italic
+            prose-p:leading-relaxed
+            prose-a:text-black dark:prose-a:text-white prose-a:no-underline prose-a:border-b prose-a:border-black dark:prose-a:border-white prose-a:hover:text-gray-600 dark:prose-a:hover:text-gray-300
+            prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800
+            prose-blockquote:border-l-4 prose-blockquote:border-black dark:prose-blockquote:border-white prose-blockquote:pl-6 prose-blockquote:italic
             prose-img:rounded-xl
+            prose-li:marker:text-gray-400
           "
         >
           {children}
@@ -127,11 +130,11 @@ export default function BlogPost({ post, children }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 pt-8 border-t border-gray-200"
+          className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800"
         >
           <a
             href="/blog"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-black transition-colors"
+            className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
           >
             <ChevronLeft size={20} />
             <span>返回文章列表</span>
