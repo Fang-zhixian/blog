@@ -78,8 +78,7 @@ const Hero = () => (
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-lg md:text-xl text-gray-500 dark:text-gray-400 leading-relaxed mb-8"
         >
-          全栈开发者 / 设计师。这里是我记录技术探索、设计心得和生活感悟的地方。
-          追求极致的性能与简约的美学。
+          全栈开发者与前沿技术探索者。游走于 AI 应用、现代 Web 与产品思维之间。擅长快速学习与整合，持续思考人机协同的未来。目前痴迷于 Vibe Coding 及一切让创造更愉悦的事物。
         </motion.p>
 
         {/* 个人标签 */}
@@ -89,7 +88,7 @@ const Hero = () => (
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex flex-wrap gap-3 mb-8"
         >
-          {['React', 'TypeScript', 'Astro', 'UI/UX'].map((tag, index) => (
+          {['React', 'TypeScript', 'AI Agent', 'Vibe Coding', 'LangChain', '产品思维'].map((tag, index) => (
             <span
               key={tag}
               className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
