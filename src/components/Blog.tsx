@@ -88,7 +88,7 @@ const Hero = () => (
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex flex-wrap gap-3 mb-8"
         >
-          {['React', 'TypeScript', 'AI Agent', 'Vibe Coding', 'LangChain', '产品思维'].map((tag, index) => (
+          {['AI Agent', 'Vibe Coding', '全栈开发', '产品设计'].map((tag, index) => (
             <span
               key={tag}
               className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
