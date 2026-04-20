@@ -82,6 +82,33 @@ function hello() {
 ```
 ```
 
+## Raw 笔记 -> 发布文章（LLM 生成）
+
+如果你先写零散笔记，再让模型整理成可上线文章，可以使用：
+
+1. 在 `raw/` 新建 raw 文件（可参考 `raw/_template.md`）
+2. 配置环境变量：
+
+```bash
+export LLM_API_KEY="your_key"
+export LLM_MODEL="gpt-4.1-mini"
+# 可选，兼容 OpenAI 风格接口
+export LLM_BASE_URL="https://api.openai.com/v1"
+```
+
+3. 生成发布稿：
+
+```bash
+npm run raw:generate -- --input raw/your-note.md
+```
+
+4. 生成后会输出到 `src/content/blog/*.md`，再执行本地预览和发布流程。
+
+常用参数：
+- `--dry-run`：只打印结果，不写文件
+- `--slug xxx`：指定输出文件名
+- `--force`：覆盖已存在文章
+
 ## 可自定义的内容
 
 ### 1. 修改个人信息

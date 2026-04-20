@@ -7,6 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "raw:generate": "node scripts/generate-post-from-raw.mjs",
+    "raw:dry-run": "node scripts/generate-post-from-raw.mjs --dry-run",
     "test": "vitest run",
     "test:watch": "vitest"
   },

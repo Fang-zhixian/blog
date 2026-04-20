@@ -105,6 +105,28 @@ tags: ["标签1", "标签2"]
 正文内容...
 ```
 
+### 从 raw 笔记自动生成文章（推荐）
+
+适用于先记录碎片化想法，再由 LLM 整理成上线稿：
+
+```bash
+# 1) 在 raw/ 写 raw 笔记（参考 raw/_template.md）
+
+# 2) 配置 LLM 环境变量
+export LLM_API_KEY="your_key"
+export LLM_MODEL="gpt-4.1-mini"
+# 可选
+export LLM_BASE_URL="https://api.openai.com/v1"
+
+# 3) 生成发布稿到 src/content/blog/
+npm run raw:generate -- --input raw/your-note.md
+```
+
+常用参数：
+- `--dry-run`：只看生成结果，不落盘
+- `--slug`：手动指定输出文件名
+- `--force`：覆盖已存在文件
+
 ---
 
 ## 功能特性
