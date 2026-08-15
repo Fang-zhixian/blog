@@ -1,8 +1,9 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import { siteConfig } from '../config/site';
 ---
 
-<PageLayout title="页面不存在 - DESIGNER.BLOG" description="没有找到这个页面">
+<PageLayout title={`页面不存在 - ${siteConfig.name}`} description="没有找到这个页面">
   <section class="py-16 text-center">
     <p class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">404</p>
     <h1 class="text-4xl md:text-5xl font-bold mb-6">页面不存在</h1>

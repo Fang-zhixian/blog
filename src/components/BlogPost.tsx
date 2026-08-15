@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ChevronLeft, Clock, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, Calendar } from 'lucide-react';
 import type { BlogEntry, PostSummary } from '../types/blog';
 import { getTagPath } from '../utils/posts';
 
@@ -7,10 +7,19 @@ interface Props {
   post: BlogEntry;
   readingMinutes: number;
   relatedPosts: PostSummary[];
+  newerPost?: PostSummary | null;
+  olderPost?: PostSummary | null;
   children?: React.ReactNode;
 }
 
-export default function BlogPost({ post, readingMinutes, relatedPosts, children }: Props) {
+export default function BlogPost({
+  post,
+  readingMinutes,
+  relatedPosts,
+  newerPost,
+  olderPost,
+  children,
+}: Props) {
   const formattedDate = new Date(post.data.pubDate).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -98,6 +107,33 @@ export default function BlogPost({ post, readingMinutes, relatedPosts, children 
       >
         {children}
       </motion.article>
+
+      {(newerPost || olderPost) && (
+        <nav className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 grid gap-6 md:grid-cols-2" aria-label="相邻文章">
+          {newerPost ? (
+            <a href={`/blog/${newerPost.slug}`} className="group">
+              <p className="text-xs uppercase tracking-widest text-gray-400 mb-2">上一篇</p>
+              <p className="inline-flex items-start gap-2 font-medium group-hover:text-gray-600 dark:group-hover:text-gray-300">
+                <ChevronLeft size={18} className="mt-1 shrink-0" />
+                {newerPost.title}
+              </p>
+            </a>
+          ) : (
+            <div />
+          )}
+          {olderPost ? (
+            <a href={`/blog/${olderPost.slug}`} className="group md:text-right">
+              <p className="text-xs uppercase tracking-widest text-gray-400 mb-2">下一篇</p>
+              <p className="inline-flex items-start gap-2 font-medium group-hover:text-gray-600 dark:group-hover:text-gray-300 md:flex-row-reverse">
+                <ChevronRight size={18} className="mt-1 shrink-0" />
+                {olderPost.title}
+              </p>
+            </a>
+          ) : (
+            <div />
+          )}
+        </nav>
+      )}
 
       {relatedPosts.length > 0 && (
         <section className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">

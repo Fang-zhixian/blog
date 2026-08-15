@@ -3,6 +3,7 @@ title: "TypeScript 最佳实践指南"
 description: "深入探讨 TypeScript 的类型系统，分享实用的技巧和最佳实践。"
 pubDate: "2024-02-15"
 tags: ["技术", "TypeScript"]
+draft: true
 ---
 
 ## TypeScript 为什么重要？

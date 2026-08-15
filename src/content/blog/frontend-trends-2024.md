@@ -3,6 +3,7 @@ title: "2024 前端趋势观察"
 description: "从 React Server Components 到边缘计算，前端生态正在经历一场深刻的变革。"
 pubDate: "2024-03-01"
 tags: ["行业", "前端"]
+draft: true
 ---
 
 ## 2024 前端趋势

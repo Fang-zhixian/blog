@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { siteConfig } from '../../config/site';
 import ThemeToggle from '../ThemeToggle';
 import Search, { type SearchResult } from '../Search';
 import MobileMenu from './MobileMenu';
@@ -46,7 +47,7 @@ export default function Navbar({ navItems, maxWidthClass, activePath, searchInde
             className="text-xl font-bold tracking-tighter"
           >
             <a href="/">
-              DESIGNER<span className="text-gray-400">.BLOG</span>
+              {siteConfig.name}
             </a>
           </motion.div>
 

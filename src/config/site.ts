@@ -17,12 +17,11 @@ export const footerLinks = [
 ];
 
 export const siteConfig = {
-  name: 'DESIGNER.BLOG',
-  title: 'DESIGNER.BLOG',
-  description: '极简风格的个人博客',
+  name: '方植贤',
+  title: '方植贤',
+  description: '全栈开发者与前沿技术探索者。记录 AI 应用、现代 Web 与产品思考。',
   url: 'https://greedywolf.tech',
   author: '方植贤',
-  twitterHandle: '@greedywolf',
   contacts: [
     {
       platform: 'github',

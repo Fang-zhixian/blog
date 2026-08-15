@@ -3,11 +3,12 @@ import Blog from '../components/Blog';
 import PageLayout from '../layouts/PageLayout.astro';
 import { getRecentPostSummaries } from '../utils/posts';
 import { getBlogPosts } from '../utils/content';
+import { siteConfig } from '../config/site';
 
 const posts = await getBlogPosts();
 const recentPosts = getRecentPostSummaries(posts, 3);
 ---
 
-<PageLayout title="DESIGNER.BLOG" description="极简风格的个人博客" activePath="/">
+<PageLayout title={siteConfig.title} description={siteConfig.description} activePath="/">
   <Blog client:load posts={recentPosts} />
 </PageLayout>

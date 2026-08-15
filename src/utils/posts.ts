@@ -91,6 +91,25 @@ export function estimateReadingMinutes(text: string): number {
   return Math.max(1, Math.round(cjkCount / 400 + wordCount / 200));
 }
 
+export function getAdjacentPostSummaries(
+  posts: BlogEntry[],
+  current: BlogEntry,
+): {
+  newer: PostSummary | null;
+  older: PostSummary | null;
+} {
+  const sorted = sortPostsByDate(posts);
+  const index = sorted.findIndex((post) => post.slug === current.slug);
+  if (index === -1) {
+    return { newer: null, older: null };
+  }
+
+  return {
+    newer: index > 0 ? toPostSummary(sorted[index - 1]) : null,
+    older: index < sorted.length - 1 ? toPostSummary(sorted[index + 1]) : null,
+  };
+}
+
 export function getRelatedPostSummaries(
   posts: BlogEntry[],
   current: BlogEntry,

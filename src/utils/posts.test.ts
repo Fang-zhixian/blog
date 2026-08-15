@@ -3,6 +3,7 @@ import type { BlogEntry, PostSummary } from '../types/blog';
 import {
   estimateReadingMinutes,
   filterPublishedPosts,
+  getAdjacentPostSummaries,
   getAllPostSummaries,
   getBlogPagePath,
   getPaginationUrls,
@@ -124,5 +125,19 @@ describe('post utilities', () => {
       'perf',
       'astro-a',
     ]);
+  });
+
+  it('returns newer and older neighbors in date order', () => {
+    const oldest = makePost('a', 'A', '2024-01-01', ['技术']);
+    const middle = makePost('b', 'B', '2024-02-01', ['技术']);
+    const newest = makePost('c', 'C', '2024-03-01', ['设计']);
+    const posts = [oldest, middle, newest];
+
+    expect(getAdjacentPostSummaries(posts, middle)).toMatchObject({
+      newer: { slug: 'c' },
+      older: { slug: 'a' },
+    });
+    expect(getAdjacentPostSummaries(posts, newest).newer).toBeNull();
+    expect(getAdjacentPostSummaries(posts, oldest).older).toBeNull();
   });
 });

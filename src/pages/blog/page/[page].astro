@@ -3,6 +3,7 @@ import BlogListPagination from '../../../components/BlogListPagination';
 import PageLayout from '../../../layouts/PageLayout.astro';
 import { getAllPostSummaries, getUniqueTags, paginatePosts, POSTS_PER_PAGE } from '../../../utils/posts';
 import { getBlogPosts } from '../../../utils/content';
+import { siteConfig } from '../../../config/site';
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
@@ -24,7 +25,7 @@ const { posts: pagePosts, totalPages } = paginatePosts(allPosts, pageNum);
 const uniqueTags = getUniqueTags(allPosts);
 ---
 
-<PageLayout title={`文章 · 第 ${pageNum} 页 - DESIGNER.BLOG`} description="我的技术博客" activePath="/blog">
+<PageLayout title={`文章 · 第 ${pageNum} 页 - ${siteConfig.name}`} description={siteConfig.description} activePath="/blog">
   <BlogListPagination
     client:load
     posts={pagePosts}
