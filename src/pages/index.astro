@@ -1,18 +1,13 @@
 ---
-/**
- * 个人博客首页
- * 使用 React 组件渲染
- */
 import Blog from '../components/Blog';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
 import { getRecentPostSummaries } from '../utils/posts';
+import { getBlogPosts } from '../utils/content';
 
-// 获取最近的三篇文章
-const posts = await getCollection('blog');
+const posts = await getBlogPosts();
 const recentPosts = getRecentPostSummaries(posts, 3);
 ---
 
-<BaseLayout title="DESIGNER.BLOG" description="极简风格的个人博客">
+<PageLayout title="DESIGNER.BLOG" description="极简风格的个人博客" activePath="/">
   <Blog client:load posts={recentPosts} />
-</BaseLayout>
+</PageLayout>

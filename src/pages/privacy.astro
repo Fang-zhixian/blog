@@ -1,0 +1,29 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { siteConfig } from '../config/site';
+---
+
+<PageLayout title="隐私说明 - DESIGNER.BLOG" description="本站如何处理访问数据" maxWidthClass="max-w-3xl">
+  <article class="prose prose-lg prose-gray dark:prose-invert max-w-none">
+    <h1>隐私说明</h1>
+    <p>
+      这是个人博客，没有账号系统，也不会出售或对外共享你的个人信息。
+    </p>
+    <h2>本站收集什么</h2>
+    <p>
+      页面由静态文件托管。为了解站点性能，接入了 Vercel Speed Insights，可能收集匿名的性能与访问指标（例如页面加载时间、地区聚合数据）。
+    </p>
+    <h2>本站不收集什么</h2>
+    <ul>
+      <li>不要求注册或登录</li>
+      <li>不保存评论或表单提交</li>
+      <li>不使用广告或第三方追踪像素</li>
+    </ul>
+    <h2>联系</h2>
+    <p>
+      如有隐私相关问题，请通过
+      <a href={siteConfig.contacts.find((contact) => contact.platform === 'email')?.href}>邮件</a>
+      联系我。
+    </p>
+  </article>
+</PageLayout>

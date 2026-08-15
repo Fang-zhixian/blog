@@ -1,11 +1,8 @@
-/**
- * Search component using Fuse.js for client-side search
- */
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
 import { Search as SearchIcon, X } from 'lucide-react';
 
-interface SearchResult {
+export interface SearchResult {
   slug: string;
   title: string;
   description: string;
@@ -19,24 +16,18 @@ const fuseOptions = {
   includeScore: true,
 };
 
-export default function Search() {
+interface Props {
+  searchIndex?: SearchResult[];
+}
+
+export default function Search({ searchIndex = [] }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [searchIndex, setSearchIndex] = useState<SearchResult[]>([]);
-  const [fuse, setFuse] = useState<Fuse<SearchResult> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    // Load search index
-    fetch('/search.json')
-      .then((res) => res.json())
-      .then((data) => {
-        setSearchIndex(data);
-        setFuse(new Fuse(data, fuseOptions));
-      })
-      .catch(console.error);
-  }, []);
+  const fuse = useMemo(() => new Fuse(searchIndex, fuseOptions), [searchIndex]);
+  const results = query
+    ? fuse.search(query).map((result) => result.item).slice(0, 10)
+    : [];
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -45,23 +36,12 @@ export default function Search() {
   }, [isOpen]);
 
   useEffect(() => {
-    if (query && fuse) {
-      const searchResults = fuse.search(query);
-      setResults(searchResults.map((result) => result.item).slice(0, 10));
-    } else {
-      setResults([]);
-    }
-  }, [query, fuse]);
-
-  // Close on escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
         setIsOpen(false);
       }
-      // Open search with Cmd/Ctrl + K
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault();
         setIsOpen(true);
       }
     };
@@ -72,9 +52,10 @@ export default function Search() {
   return (
     <>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
         className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-        aria-label="Open search"
+        aria-label="打开搜索"
       >
         <SearchIcon size={20} className="text-gray-600 dark:text-gray-400" />
       </button>
@@ -85,8 +66,11 @@ export default function Search() {
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="max-w-2xl mx-auto mt-20 bg-white dark:bg-gray-900 rounded-xl shadow-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+            className="max-w-2xl mx-auto mt-20 bg-white dark:bg-gray-900 rounded-xl overflow-hidden"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="搜索文章"
           >
             <div className="flex items-center px-4 border-b border-gray-200 dark:border-gray-700">
               <SearchIcon size={20} className="text-gray-400" />
@@ -95,10 +79,10 @@ export default function Search() {
                 type="text"
                 placeholder="搜索文章..."
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(event) => setQuery(event.target.value)}
                 className="flex-1 px-4 py-4 bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
               />
-              <button onClick={() => setIsOpen(false)}>
+              <button type="button" onClick={() => setIsOpen(false)} aria-label="关闭搜索">
                 <X size={20} className="text-gray-400 hover:text-gray-600" />
               </button>
             </div>

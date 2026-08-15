@@ -1,32 +1,21 @@
 ---
-/**
- * 文章列表页 - 第1页
- */
 import BlogListPagination from '../../components/BlogListPagination';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-import { getAllPostSummaries, getUniqueTags, POSTS_PER_PAGE } from '../../utils/posts';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { getAllPostSummaries, getUniqueTags, paginatePosts } from '../../utils/posts';
+import { getBlogPosts } from '../../utils/content';
 
-// 获取所有文章
-const posts = await getCollection('blog');
+const posts = await getBlogPosts();
 const allPosts = getAllPostSummaries(posts);
-const totalPosts = allPosts.length;
-const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
-
-// 第1页的文章
-const pagePosts = allPosts.slice(0, POSTS_PER_PAGE);
-
-// 获取所有标签
+const { posts: pagePosts, totalPages } = paginatePosts(allPosts, 1);
 const uniqueTags = getUniqueTags(allPosts);
 ---
 
-<BaseLayout title="文章 - DESIGNER.BLOG" description="我的技术博客">
+<PageLayout title="文章 - DESIGNER.BLOG" description="我的技术博客" activePath="/blog">
   <BlogListPagination
     client:load
     posts={pagePosts}
     tags={uniqueTags}
     currentPage={1}
     totalPages={totalPages}
-    basePath="/blog"
   />
-</BaseLayout>
+</PageLayout>

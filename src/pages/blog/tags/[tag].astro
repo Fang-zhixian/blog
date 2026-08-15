@@ -1,0 +1,36 @@
+---
+import BlogListPagination from '../../../components/BlogListPagination';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import { getAllPostSummaries, getUniqueTags } from '../../../utils/posts';
+import { getBlogPosts } from '../../../utils/content';
+
+export async function getStaticPaths() {
+  const posts = await getBlogPosts();
+  const allPosts = getAllPostSummaries(posts);
+  const tags = getUniqueTags(allPosts);
+
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const posts = await getBlogPosts();
+const allPosts = getAllPostSummaries(posts);
+const taggedPosts = allPosts.filter((post) => post.tags.includes(tag));
+const uniqueTags = getUniqueTags(allPosts);
+---
+
+<PageLayout title={`${tag} - DESIGNER.BLOG`} description={`标签「${tag}」下的文章`} activePath="/blog">
+  <BlogListPagination
+    client:load
+    posts={taggedPosts}
+    tags={uniqueTags}
+    activeTag={tag}
+    currentPage={1}
+    totalPages={1}
+    heading={tag}
+    description={`共 ${taggedPosts.length} 篇与「${tag}」相关的文章`}
+  />
+</PageLayout>

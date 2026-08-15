@@ -23,6 +23,17 @@ const { title, description, type, image } = Astro.props;
     <meta name="generator" content={siteConfig.name} />
     <title>{title}</title>
     <SEO title={title} description={description} type={type} image={image} />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (stored === 'dark' || (!stored && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <slot name="head" />
   </head>
   <body>

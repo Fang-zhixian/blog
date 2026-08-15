@@ -1,9 +1,9 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import { getBlogPosts } from '../utils/content';
 
 export const GET = async () => {
-  const posts = await getCollection('blog');
+  const posts = await getBlogPosts();
 
   const sortedPosts = posts.sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -17,7 +17,7 @@ export const GET = async () => {
       title: post.data.title,
       pubDate: post.data.pubDate,
       description: post.data.description,
-      link: `/blog/${post.slug}/`,
+      link: `/blog/${post.slug}`,
     })),
     customData: `<language>zh-cn</language>`,
   });

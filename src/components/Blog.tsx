@@ -1,30 +1,8 @@
-/**
- * 个人博客主页面
- * 风格：极简、高留白、现代排版
- * 技术栈：React + Tailwind CSS + Framer Motion
- */
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Github, Mail, Link2, X } from 'lucide-react';
-import Navbar from './layout/Navbar';
-import MobileMenu from './layout/MobileMenu';
-import Footer from './layout/Footer';
-import ThemeToggle from './ThemeToggle';
-import Search from './Search';
+import PostCard from './PostCard';
 import type { PostSummary } from '../types/blog';
 import { siteConfig } from '../config/site';
-
-const NAV_ITEMS = [
-  { name: '首页', href: '/' },
-  { name: '文章', href: '/blog' },
-  { name: '关于', href: '/about' },
-];
-
-const FOOTER_LINKS = [
-  { href: '/rss.xml', label: 'RSS Feed' },
-  { href: '#', label: 'Privacy Policy' },
-  { href: '#', label: 'Sitemap' },
-];
 
 const CONTACT_ICON_MAP = {
   github: Github,
@@ -40,7 +18,6 @@ const CONTACT_ICON_MAP = {
 const Hero = () => (
   <section className="mb-32">
     <div className="flex flex-col md:flex-row items-start gap-12">
-      {/* 头像区域 */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -48,28 +25,27 @@ const Hero = () => (
         className="flex-shrink-0"
       >
         <div className="relative">
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-xl">
-            {/* 替换为你自己的头像路径 */}
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800">
             <img
               src="/avatar.png"
-              alt="头像"
+              alt={`${siteConfig.author}的头像`}
+              width={160}
+              height={160}
               className="w-full h-full object-cover"
             />
           </div>
-          {/* 状态指示器 */}
           <div className="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-4 border-white dark:border-gray-800 rounded-full"></div>
         </div>
       </motion.div>
 
-      {/* 文字介绍区域 */}
       <div className="flex-1">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
           className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6"
         >
-          你好，我是<span className="text-gray-400">方植贤</span>
+          你好，我是<span className="text-gray-400">{siteConfig.author}</span>
         </motion.h1>
 
         <motion.p
@@ -81,14 +57,13 @@ const Hero = () => (
           全栈开发者与前沿技术探索者。游走于 AI 应用、现代 Web 与产品思维之间。擅长快速学习与整合，持续思考人机协同的未来。目前痴迷于 Vibe Coding 及一切让创造更愉悦的事物。
         </motion.p>
 
-        {/* 个人标签 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex flex-wrap gap-3 mb-8"
         >
-          {['AI Agent', 'Vibe Coding', '全栈开发', '产品设计'].map((tag, index) => (
+          {['AI Agent', 'Vibe Coding', '全栈开发', '产品设计'].map((tag) => (
             <span
               key={tag}
               className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
@@ -131,41 +106,6 @@ const Hero = () => (
   </section>
 );
 
-interface PostCardProps {
-  post: PostSummary;
-  index: number;
-}
-
-const PostCard = ({ post, index }: PostCardProps) => (
-  <motion.article
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay: index * 0.1 }}
-    className="group cursor-pointer"
-  >
-    <a href={`/blog/${post.slug}`} className="block">
-      <div className="flex flex-col md:flex-row md:items-baseline justify-between border-b border-gray-100 dark:border-gray-800 pb-12">
-        <div className="md:max-w-2xl">
-          <div className="flex items-center space-x-3 mb-4">
-            <span className="text-xs font-bold uppercase tracking-widest px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">{post.tag}</span>
-            <span className="text-xs text-gray-400 font-medium">{post.date}</span>
-          </div>
-          <h3 className="text-2xl md:text-3xl font-bold mb-4 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
-            {post.title}
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-            {post.excerpt}
-          </p>
-        </div>
-        <div className="mt-6 md:mt-0 opacity-0 group-hover:opacity-100 transition-opacity">
-          <ChevronRight size={24} className="text-gray-300 dark:text-gray-600" />
-        </div>
-      </div>
-    </a>
-  </motion.article>
-);
-
 const CTASection = () => (
   <section className="mt-32 p-12 bg-black dark:bg-white text-white dark:text-black rounded-3xl flex flex-col items-center text-center">
     <h2 className="text-3xl md:text-5xl font-bold mb-6">准备好开始合作了吗？</h2>
@@ -176,55 +116,29 @@ const CTASection = () => (
   </section>
 );
 
-
 interface Props {
   posts: PostSummary[];
 }
 
 export default function Blog({ posts }: Props) {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0f0f0f] text-[#1a1a1a] dark:text-[#fafafa] font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
-      <Navbar
-        isScrolled={isScrolled}
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        navItems={NAV_ITEMS}
-        maxWidthClass="max-w-5xl"
-        activePath="/"
-      />
-      <MobileMenu isOpen={isMobileMenuOpen} navItems={NAV_ITEMS} />
+    <>
+      <Hero />
 
-      <main className="max-w-5xl mx-auto px-6 pt-32 pb-20">
-        <Hero />
+      <section id="posts">
+        <div className="flex justify-between items-end mb-12">
+          <h2 className="text-2xl font-bold uppercase tracking-widest text-gray-400">近期文章</h2>
+          <a href="/blog" className="text-sm font-medium hover:underline">浏览全部</a>
+        </div>
 
-        <section id="posts">
-          <div className="flex justify-between items-end mb-12">
-            <h2 className="text-2xl font-bold uppercase tracking-widest text-gray-400">近期文章</h2>
-            <a href="/blog" className="text-sm font-medium hover:underline">浏览全部</a>
-          </div>
+        <div className="grid gap-12">
+          {posts.map((post, index) => (
+            <PostCard key={post.slug} post={post} index={index} />
+          ))}
+        </div>
+      </section>
 
-          <div className="grid gap-12">
-            {posts.map((post, index) => (
-              <PostCard key={post.slug} post={post} index={index} />
-            ))}
-          </div>
-        </section>
-
-        <CTASection />
-      </main>
-
-      <Footer maxWidthClass="max-w-5xl" links={FOOTER_LINKS} authorName={siteConfig.author} />
-    </div>
+      <CTASection />
+    </>
   );
 }

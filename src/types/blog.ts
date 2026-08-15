@@ -8,4 +8,11 @@ export interface PostSummary {
   excerpt: string;
   date: string;
   tag: string;
+  tags: string[];
+}
+
+export interface TocHeading {
+  depth: number;
+  slug: string;
+  text: string;
 }

@@ -1,0 +1,44 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
+import { footerLinks, navItems, siteConfig } from '../config/site';
+import { getBlogPosts } from '../utils/content';
+
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  image?: string;
+  maxWidthClass?: string;
+  activePath?: string;
+}
+
+const {
+  title,
+  description,
+  type,
+  image,
+  maxWidthClass = 'max-w-5xl',
+  activePath,
+} = Astro.props;
+
+const searchIndex = (await getBlogPosts()).map((post) => ({
+  slug: post.slug,
+  title: post.data.title,
+  description: post.data.description,
+  tags: post.data.tags || [],
+  date: post.data.pubDate.toISOString(),
+}));
+---
+
+<BaseLayout title={title} description={description} type={type} image={image}>
+  <slot name="head" slot="head" />
+  <div class="min-h-screen bg-[#fafafa] dark:bg-[#0f0f0f] text-[#1a1a1a] dark:text-[#fafafa] font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+    <Navbar client:load navItems={navItems} maxWidthClass={maxWidthClass} activePath={activePath} searchIndex={searchIndex} />
+    <main class={`${maxWidthClass} mx-auto px-6 pt-32 pb-20`}>
+      <slot />
+    </main>
+    <Footer maxWidthClass={maxWidthClass} links={[...footerLinks]} authorName={siteConfig.author} />
+  </div>
+</BaseLayout>

@@ -4,6 +4,18 @@ export interface ContactLink {
   href: string;
 }
 
+export const navItems = [
+  { name: '首页', href: '/' },
+  { name: '文章', href: '/blog' },
+  { name: '关于', href: '/about' },
+];
+
+export const footerLinks = [
+  { href: '/rss.xml', label: 'RSS Feed' },
+  { href: '/privacy', label: '隐私说明' },
+  { href: '/sitemap-index.xml', label: 'Sitemap' },
+];
+
 export const siteConfig = {
   name: 'DESIGNER.BLOG',
   title: 'DESIGNER.BLOG',
@@ -18,19 +30,9 @@ export const siteConfig = {
       href: 'https://github.com/Fang-zhixian',
     },
     {
-      platform: 'x',
-      label: 'X',
-      href: 'https://x.com/your_handle',
-    },
-    {
       platform: 'email',
       label: 'Email',
       href: 'mailto:2634562642@qq.com',
-    },
-    {
-      platform: 'xiaohongshu',
-      label: '小红书',
-      href: 'https://www.xiaohongshu.com/user/profile/your_profile_id',
     },
   ] satisfies ContactLink[],
 };

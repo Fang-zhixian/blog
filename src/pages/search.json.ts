@@ -1,8 +1,8 @@
-import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { getBlogPosts } from '../utils/content';
 
 export const GET: APIRoute = async () => {
-  const posts = await getCollection('blog');
+  const posts = await getBlogPosts();
 
   const searchIndex = posts.map((post) => ({
     slug: post.slug,
