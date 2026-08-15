@@ -1,24 +1,22 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, Clock, Calendar } from 'lucide-react';
-import type { BlogEntry, PostSummary, TocHeading } from '../types/blog';
+import type { BlogEntry, PostSummary } from '../types/blog';
 import { getTagPath } from '../utils/posts';
 
 interface Props {
   post: BlogEntry;
   readingMinutes: number;
-  headings: TocHeading[];
   relatedPosts: PostSummary[];
   children?: React.ReactNode;
 }
 
-export default function BlogPost({ post, readingMinutes, headings, relatedPosts, children }: Props) {
+export default function BlogPost({ post, readingMinutes, relatedPosts, children }: Props) {
   const formattedDate = new Date(post.data.pubDate).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
   const tags = post.data.tags ?? [];
-  const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 
   return (
     <>
@@ -81,24 +79,6 @@ export default function BlogPost({ post, readingMinutes, headings, relatedPosts,
         />
       )}
 
-      {tocHeadings.length > 1 && (
-        <nav aria-label="文章目录" className="mb-12 p-6 bg-gray-100 dark:bg-gray-900 rounded-2xl">
-          <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">目录</p>
-          <ol className="space-y-2">
-            {tocHeadings.map((heading) => (
-              <li key={heading.slug} className={heading.depth === 3 ? 'pl-4' : ''}>
-                <a
-                  href={`#${heading.slug}`}
-                  className="text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white"
-                >
-                  {heading.text}
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
-      )}
-
       <hr className="border-gray-200 dark:border-gray-800 mb-12" />
 
       <motion.article
@@ -106,7 +86,7 @@ export default function BlogPost({ post, readingMinutes, headings, relatedPosts,
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         className="prose prose-lg prose-gray dark:prose-invert max-w-none
-          prose-headings:font-bold prose-headings:tracking-tight
+          prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-28
           prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
           prose-p:leading-relaxed
           prose-a:text-black dark:prose-a:text-white prose-a:no-underline prose-a:border-b prose-a:border-black dark:prose-a:border-white prose-a:hover:text-gray-600 dark:prose-a:hover:text-gray-300
