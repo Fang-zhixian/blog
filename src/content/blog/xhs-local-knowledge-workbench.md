@@ -51,7 +51,7 @@ draft: false
 
 但开发产品不等于每个轮子都要自己造。既然我遇到了这个问题，GitHub 上大概率也有人遇到过。
 
-我把需求和困难整理后交给 Grok，让它帮我搜索、比较相关开源项目。最后，我选择了一份已经具备小红书笔记、图片、视频和结构化信息采集能力的代码作为底座。当时我是沿着 MediaCrawler 这类关键词找到它的，后来把持续改造的版本放在了 [XHS-Info-collector](https://github.com/Fang-zhixian/XHS-Info-collector)。
+我把需求和困难整理后交给 Grok，让它帮我搜索、比较相关开源项目。最后，我选择了一份已经具备小红书笔记、图片、视频和结构化信息采集能力的代码作为底座。当时我是沿着 MediaCrawler 这类关键词找到它的，后来把持续改造的版本放在了 [XHS-Info-collector](https://github.com/Nothings2Seeyeyeye/XHS-Info-collector)。
 
 这个选择帮我跨过了最陡的一段：项目已经包含 JS 签名桥接和基础 API 适配，我可以把精力放到自己真正想验证的产品闭环上。
 
