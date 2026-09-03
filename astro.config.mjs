@@ -18,5 +18,11 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-dark',
     },
+    remarkRehype: {
+      footnoteLabel: '参考文献',
+      footnoteLabelProperties: {
+        className: [],
+      },
+    },
   },
 });

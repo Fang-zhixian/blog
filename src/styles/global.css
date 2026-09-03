@@ -58,3 +58,64 @@ body {
 .prose pre code span {
   @apply bg-transparent;
 }
+
+.prose .table-scroll {
+  @apply my-8 -mx-4 px-4 overflow-x-auto;
+}
+
+.prose .table-scroll table {
+  @apply my-0 min-w-[40rem];
+}
+
+.prose table {
+  @apply w-full border-collapse;
+}
+
+.prose thead th {
+  @apply pb-3 pr-5 border-b-2 border-gray-200 whitespace-nowrap;
+}
+
+.prose table th:first-child,
+.prose table td:first-child {
+  @apply min-w-[9.5rem];
+}
+
+.dark .prose thead th {
+  @apply border-gray-700;
+}
+
+.prose tbody td {
+  @apply py-3.5 pr-5 border-b border-gray-100;
+}
+
+.dark .prose tbody td {
+  @apply border-gray-800;
+}
+
+.prose tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+.prose section.footnotes {
+  @apply mt-16 pt-8 border-t border-gray-200 text-[0.92em] leading-relaxed;
+}
+
+.dark .prose section.footnotes {
+  @apply border-gray-800;
+}
+
+.prose section.footnotes h2 {
+  @apply mt-0 mb-5 text-2xl font-bold tracking-tight;
+}
+
+.prose section.footnotes ol {
+  @apply mt-0;
+}
+
+.prose section.footnotes li {
+  @apply my-2 text-gray-500 dark:text-gray-400;
+}
+
+.prose sup a {
+  @apply border-b-0 text-[0.75em] font-medium ml-0.5;
+}

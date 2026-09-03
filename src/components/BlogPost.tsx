@@ -20,11 +20,11 @@ export default function BlogPost({
   olderPost,
   children,
 }: Props) {
-  const formattedDate = new Date(post.data.pubDate).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' } as const;
+  const formattedDate = new Date(post.data.pubDate).toLocaleDateString('zh-CN', dateOptions);
+  const formattedUpdatedDate = post.data.updatedDate
+    ? new Date(post.data.updatedDate).toLocaleDateString('zh-CN', dateOptions)
+    : null;
   const tags = post.data.tags ?? [];
 
   return (
@@ -68,10 +68,15 @@ export default function BlogPost({
           {post.data.title}
         </h1>
 
-        <div className="flex items-center gap-6 text-gray-400 dark:text-gray-500 text-sm">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-gray-400 dark:text-gray-500 text-sm">
           <div className="flex items-center gap-2">
             <Calendar size={16} />
-            <span>{formattedDate}</span>
+            <span>
+              {formattedDate}
+              {formattedUpdatedDate && formattedUpdatedDate !== formattedDate
+                ? ` · 更新于 ${formattedUpdatedDate}`
+                : ''}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <Clock size={16} />
@@ -96,13 +101,16 @@ export default function BlogPost({
         transition={{ duration: 0.6, delay: 0.2 }}
         className="prose prose-lg prose-gray dark:prose-invert max-w-none
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-28
-          prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-          prose-p:leading-relaxed
+          prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:leading-snug
+          prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-3
+          prose-p:leading-[1.85] prose-p:my-5
           prose-a:text-black dark:prose-a:text-white prose-a:no-underline prose-a:border-b prose-a:border-black dark:prose-a:border-white prose-a:hover:text-gray-600 dark:prose-a:hover:text-gray-300
           prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800
-          prose-blockquote:border-l-4 prose-blockquote:border-black dark:prose-blockquote:border-white prose-blockquote:pl-6 prose-blockquote:italic
+          prose-blockquote:border-l-4 prose-blockquote:border-black dark:prose-blockquote:border-white prose-blockquote:pl-5 prose-blockquote:not-italic prose-blockquote:font-normal prose-blockquote:text-[0.98em] prose-blockquote:leading-[1.8]
           prose-img:rounded-xl
           prose-li:marker:text-gray-400
+          prose-th:text-left prose-th:align-top prose-th:font-semibold prose-th:text-[0.85em] prose-th:leading-relaxed
+          prose-td:align-top prose-td:text-[0.9em] prose-td:leading-relaxed
         "
       >
         {children}
