@@ -1,12 +1,14 @@
 ---
+import { getImage } from 'astro:assets';
 import BlogPost from '../../components/BlogPost';
-import CopyCode from '../../components/CopyCode';
-import TableOfContents from '../../components/TableOfContents';
+import CopyCode from '../../components/CopyCode.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { estimateReadingMinutes, getAdjacentPostSummaries, getRelatedPostSummaries } from '../../utils/posts';
 import { getBlogPosts } from '../../utils/content';
 import { render } from 'astro:content';
 import { siteConfig } from '../../config/site';
+import defaultOgSource from '../../assets/avatar.png';
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
@@ -29,6 +31,17 @@ const relatedPosts = getRelatedPostSummaries(posts, post);
 const { newer, older } = getAdjacentPostSummaries(posts, post);
 const readingMinutes = estimateReadingMinutes(post.body ?? '');
 const showToc = tocHeadings.length > 0;
+const ogImage = await getImage({
+  src: post.data.ogImage ?? defaultOgSource,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
+  format: 'jpg',
+  quality: 80,
+  layout: 'fixed',
+});
+const canonicalUrl = new URL(`/blog/${post.slug}/`, siteConfig.url).toString();
+const ogImageUrl = new URL(ogImage.src, siteConfig.url).toString();
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -36,9 +49,18 @@ const articleJsonLd = {
   description: post.data.description,
   datePublished: post.data.pubDate.toISOString(),
   dateModified: (post.data.updatedDate || post.data.pubDate).toISOString(),
+  url: canonicalUrl,
+  image: ogImageUrl,
+  mainEntityOfPage: canonicalUrl,
   author: {
     '@type': 'Person',
     name: siteConfig.author,
+    url: siteConfig.url,
+  },
+  publisher: {
+    '@type': 'Person',
+    name: siteConfig.author,
+    url: siteConfig.url,
   },
 };
 ---
@@ -47,7 +69,9 @@ const articleJsonLd = {
   title={`${post.data.title} - ${siteConfig.name}`}
   description={post.data.description}
   type="article"
-  image={post.data.heroImage}
+  image={ogImage.src}
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate || post.data.pubDate}
   maxWidthClass="max-w-6xl"
   activePath="/blog"
 >
@@ -55,7 +79,6 @@ const articleJsonLd = {
   <div class={showToc ? 'xl:grid xl:grid-cols-[minmax(0,48rem)_14rem] xl:justify-center xl:gap-16' : 'max-w-3xl mx-auto'}>
     <div class={showToc ? 'max-w-3xl xl:max-w-none' : undefined}>
       <BlogPost
-        client:idle
         post={post}
         readingMinutes={readingMinutes}
         relatedPosts={relatedPosts}
@@ -64,8 +87,8 @@ const articleJsonLd = {
       >
         <Content />
       </BlogPost>
-      <CopyCode client:idle />
+      <CopyCode />
     </div>
-    {showToc && <TableOfContents client:load headings={tocHeadings} />}
+    {showToc && <TableOfContents headings={tocHeadings} />}
   </div>
 </PageLayout>

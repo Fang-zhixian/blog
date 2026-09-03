@@ -1,9 +1,34 @@
 ---
+import { getImage } from 'astro:assets';
 import About from '../components/About';
 import PageLayout from '../layouts/PageLayout.astro';
 import { siteConfig } from '../config/site';
+import avatarSrc from '../assets/avatar.png';
+
+const avatarImage = await getImage({
+  src: avatarSrc,
+  width: 160,
+  height: 160,
+  densities: [1, 2],
+  format: 'webp',
+  layout: 'fixed',
+});
+const avatar = {
+  src: avatarImage.src,
+  srcSet: avatarImage.srcSet.attribute,
+  width: 160,
+  height: 160,
+};
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: siteConfig.author,
+  url: siteConfig.url,
+  description: siteConfig.description,
+};
 ---
 
 <PageLayout title={`关于 - ${siteConfig.name}`} description={`关于我 - ${siteConfig.author}`} maxWidthClass="max-w-3xl" activePath="/about">
-  <About client:idle />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+  <About avatar={avatar} />
 </PageLayout>

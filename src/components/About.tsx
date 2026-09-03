@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
 import { Github, Mail, MapPin, Calendar, Link2, X } from 'lucide-react';
 import { siteConfig } from '../config/site';
+import type { OptimizedImage } from '../types/blog';
 
 const CONTACT_ICON_MAP = {
   github: Github,
@@ -13,22 +13,27 @@ const CONTACT_ICON_MAP = {
   other: Link2,
 } as const;
 
-export default function About() {
+interface Props {
+  avatar: OptimizedImage;
+}
+
+export default function About({ avatar }: Props) {
+  const emailHref = siteConfig.contacts.find((contact) => contact.platform === 'email')?.href;
+
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-16"
-      >
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-16">
         <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 flex-shrink-0">
           <img
-            src="/avatar.png"
+            src={avatar.src}
+            srcSet={avatar.srcSet}
+            sizes="160px"
             alt={`${siteConfig.author}的头像`}
-            width={160}
-            height={160}
+            width={avatar.width}
+            height={avatar.height}
             className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
           />
         </div>
 
@@ -48,38 +53,51 @@ export default function About() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="prose prose-lg prose-gray dark:prose-invert max-w-none mb-16"
-      >
+      <div className="prose prose-lg prose-gray dark:prose-invert max-w-none mb-16">
         <h2>关于我</h2>
         <p>
-          你好，我是方植贤，一名对技术与创造充满热忱的开发者。
+          你好，我是方植贤。这个博客只写我自己做过、想清楚的事。
         </p>
         <p>
-          我的技能树比较"横向生长"——从 React、TypeScript 前端到全栈，从数据分析、机器学习到 AI Agent 应用框架，我享受广泛涉猎与快速学习的过程。我或许不是每个领域的终极专家，但我擅长连接知识点，并用强大的信息搜索与整合能力，将想法转化为可行的解决方案。
+          最近一条完整链路是：活动现场去不成，就把视频号直播录下来，再准备转成文字给 AI 摘要。卡住的不是模型，是怎么稳定拿到流、怎么让 ffmpeg 在电脑睡着之前还活着。我把它做成了 Live Capture，过程写在文章里。
         </p>
         <p>
-          我始终保持着对技术浪潮的敏锐。今天，我的兴趣聚焦于大模型所开启的新纪元：无论是用 LangChain 等工具搭建智能体，还是实践 Vibe Coding 这种全新的编程范式，我都在亲身探索并思考，我们应如何与 AI 协同，重塑工作与创造本身。
+          技能树比较横向——React、TypeScript、全栈，到 AI Agent 和产品直觉。我不是每个领域的终极专家，但习惯把想法收成能跑的东西，并记下取舍。
         </p>
         <p>
-          此外，一种强烈的产品思维与对未来趋势的直觉，常驱使我去构想一些"超前"的产品灵感。虽然并非所有想法都得以实现，但这种从未来回望现在的视角，让我在技术选型与设计时，总能考虑到下一步的演化方向。
+          如果某篇文章或项目对上了你正在做的事，欢迎来信。
         </p>
-        <p>
-          这个博客记录了我的学习轨迹、技术实践与不成体系的思考。如果这里的任何内容引发了你的共鸣或讨论，非常欢迎与我交流。
-        </p>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="mb-16"
-      >
+      <div className="mb-16">
+        <h3 className="text-lg font-bold mb-6">项目</h3>
+        <div className="space-y-8">
+          {siteConfig.featuredProjects.map((project) => (
+            <div key={project.href}>
+              <p className="font-medium mb-2">
+                <a href={project.href} className="hover:text-gray-600 dark:hover:text-gray-300">
+                  {project.title}
+                </a>
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">{project.description}</p>
+              <div className="flex flex-wrap gap-4 text-sm">
+                <a href={project.href} className="border-b border-black dark:border-white pb-0.5">
+                  阅读实践记录
+                </a>
+                {project.repo && (
+                  <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
+                    GitHub
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-16">
         <h3 className="text-lg font-bold mb-4">技术全景扫描者</h3>
         <div className="flex flex-wrap gap-3 mb-6">
           {['React', 'TypeScript', 'Astro', 'Next.js', 'Tailwind CSS', 'Node.js', 'Figma', 'UI/UX'].map((skill) => (
@@ -102,15 +120,11 @@ export default function About() {
             </span>
           ))}
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-      >
+      <div>
         <h3 className="text-lg font-bold mb-4">联系方式</h3>
-        <div className="flex gap-4">
+        <div className="flex gap-4 mb-6">
           {siteConfig.contacts.map((contact) => {
             const Icon = CONTACT_ICON_MAP[contact.platform];
             const isExternal = contact.href.startsWith('http');
@@ -128,7 +142,16 @@ export default function About() {
             );
           })}
         </div>
-      </motion.div>
+        {emailHref && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            想讨论文章或项目，可以直接
+            <a href={emailHref} className="mx-1 border-b border-black dark:border-white">
+              写信给我
+            </a>
+            。
+          </p>
+        )}
+      </div>
     </>
   );
 }

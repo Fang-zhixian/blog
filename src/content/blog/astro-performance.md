@@ -3,6 +3,7 @@ title: "构建极速网页的艺术：为什么我选择 Astro"
 description: "在性能为王的时代，如何通过零 JS 架构实现极致的加载速度？"
 pubDate: "2024-03-20"
 tags: ["技术", "Astro"]
+draft: true
 ---
 
 ## 为什么选择 Astro？

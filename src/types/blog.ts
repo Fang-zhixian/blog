@@ -16,3 +16,10 @@ export interface TocHeading {
   slug: string;
   text: string;
 }
+
+export interface OptimizedImage {
+  src: string;
+  srcSet?: string;
+  width: number;
+  height: number;
+}

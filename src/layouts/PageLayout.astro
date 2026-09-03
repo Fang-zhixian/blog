@@ -1,15 +1,16 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import Navbar from '../components/layout/Navbar';
+import Navbar from '../components/layout/Navbar.astro';
 import Footer from '../components/layout/Footer';
-import { footerLinks, navItems, siteConfig } from '../config/site';
-import { getBlogPosts } from '../utils/content';
+import { footerLinks, siteConfig } from '../config/site';
 
 interface Props {
   title: string;
   description: string;
   type?: 'website' | 'article';
   image?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
   maxWidthClass?: string;
   activePath?: string;
 }
@@ -19,24 +20,31 @@ const {
   description,
   type,
   image,
+  publishedTime,
+  modifiedTime,
   maxWidthClass = 'max-w-5xl',
   activePath,
 } = Astro.props;
-
-const searchIndex = (await getBlogPosts()).map((post) => ({
-  slug: post.slug,
-  title: post.data.title,
-  description: post.data.description,
-  tags: post.data.tags || [],
-  date: post.data.pubDate.toISOString(),
-}));
 ---
 
-<BaseLayout title={title} description={description} type={type} image={image}>
+<BaseLayout
+  title={title}
+  description={description}
+  type={type}
+  image={image}
+  publishedTime={publishedTime}
+  modifiedTime={modifiedTime}
+>
   <slot name="head" slot="head" />
   <div class="min-h-screen bg-[#fafafa] dark:bg-[#0f0f0f] text-[#1a1a1a] dark:text-[#fafafa] font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
-    <Navbar client:load navItems={navItems} maxWidthClass={maxWidthClass} activePath={activePath} searchIndex={searchIndex} />
-    <main class={`${maxWidthClass} mx-auto px-6 pt-32 pb-20`}>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-3 focus:py-2 focus:bg-black focus:text-white dark:focus:bg-white dark:focus:text-black"
+    >
+      跳到正文
+    </a>
+    <Navbar maxWidthClass={maxWidthClass} activePath={activePath} />
+    <main id="main-content" tabindex="-1" class={`${maxWidthClass} mx-auto px-6 pt-32 pb-20`}>
       <slot />
     </main>
     <Footer maxWidthClass={maxWidthClass} links={[...footerLinks]} authorName={siteConfig.author} />

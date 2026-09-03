@@ -1,41 +1,34 @@
 # 个人博客
 
-极简风格的个人博客，基于 Astro + React + Tailwind CSS 构建。
+方植贤的个人站点，线上地址 [www.greedywolf.tech](https://www.greedywolf.tech)。Astro SSG，页面默认不向浏览器下发 React。
 
 ## 技术栈
 
-- **Astro** - 静态站点生成器
-- **React** - 交互组件
-- **Tailwind CSS** - 样式框架
-- **Framer Motion** - 动画效果
-- **Markdown** - 文章内容管理
+- **Astro** - 静态站点生成，导航 / 搜索 / 主题 / 目录用原生脚本
+- **React** - 仅构建期渲染首页、列表、关于、文章模板，没有 `client:load`
+- **Tailwind CSS** - 样式
+- **Markdown + astro:assets** - 文章与配图
 
 ## 项目结构
 
 ```
 my-blog/
 ├── src/
-│   ├── components/           # React 组件
-│   │   ├── Blog.tsx         # 首页组件
-│   │   ├── BlogList.tsx     # 文章列表组件
-│   │   ├── BlogPost.tsx     # 文章详情组件
-│   │   └── About.tsx        # 关于页面组件
-│   ├── content/
-│   │   └── blog/            # Markdown 文章目录
-│   │       ├── astro-performance.md
-│   │       ├── design-whitespace.md
-│   │       └── ...
+│   ├── assets/               # 头像与文章配图（构建时出 WebP / srcset）
+│   ├── components/
+│   │   ├── layout/           # Navbar.astro、Footer
+│   │   ├── Search.astro      # 打开后再拉 /search.json
+│   │   ├── Blog.tsx          # 首页（SSR）
+│   │   ├── BlogPost.tsx      # 文章壳（SSR）
+│   │   └── About.tsx         # 关于页（SSR）
+│   ├── content/blog/         # 已发布文 + draft 模板文
 │   ├── pages/
-│   │   ├── index.astro     # 首页
-│   │   ├── about.astro      # 关于页
-│   │   └── blog/
-│   │       ├── index.astro  # 文章列表页
-│   │       └── [...slug].astro  # 文章详情页
-│   └── styles/
-│       └── global.css       # Tailwind 样式
-├── public/                  # 静态资源
-├── astro.config.mjs         # Astro 配置
-├── tailwind.config.mjs      # Tailwind 配置
+│   │   ├── index.astro
+│   │   ├── about.astro
+│   │   ├── search.json.ts
+│   │   └── blog/[slug].astro
+│   └── styles/global.css
+├── astro.config.mjs
 └── package.json
 ```
 
@@ -115,10 +108,10 @@ npm run raw:generate -- --input raw/your-note.md
 
 编辑 `src/components/Blog.tsx`：
 
-- 名字：`陈志贤`
-- 头像：替换 `<img src="...">` 中的 URL
-- 技能标签：修改 `['React', 'TypeScript', ...]` 数组
-- 社交链接：修改 `href="https://github.com"` 等
+- 名字：`src/config/site.ts` 里的 `siteConfig.author`
+- 头像：替换 `src/assets/avatar.png`
+- 技能标签：修改首页 Hero 中的标签数组
+- 社交链接：修改 `src/config/site.ts` 中的 `contacts`
 
 ### 2. 修改关于页面
 
@@ -187,7 +180,7 @@ git push
 
 Vercel 会自动检测到 GitHub 上的更新，并重新部署网站。
 
-- 访问 https://greedywolf.tech 查看网站
+- 访问 https://www.greedywolf.tech 查看网站
 - 访问 https://vercel.com/dashboard 查看部署状态
 
 ---

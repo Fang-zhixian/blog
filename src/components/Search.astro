@@ -1,0 +1,209 @@
+<div data-search-root>
+  <button
+    type="button"
+    data-search-open
+    class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+    aria-label="打开搜索"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 dark:text-gray-300" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.3-4.3"></path>
+    </svg>
+  </button>
+
+  <dialog
+    data-search-dialog
+    aria-label="搜索文章"
+    class="fixed inset-0 z-50 w-[min(42rem,calc(100%-2rem))] max-h-[min(32rem,calc(100%-6rem))] rounded-xl bg-white dark:bg-gray-900 p-0 mt-20 mx-auto shadow-none border-0 backdrop:bg-black/50"
+  >
+    <div class="flex items-center px-4 border-b border-gray-200 dark:border-gray-700">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input
+        data-search-input
+        type="search"
+        placeholder="搜索文章..."
+        class="flex-1 px-4 py-4 bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
+      />
+      <button type="button" data-search-close aria-label="关闭搜索">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 hover:text-gray-600" aria-hidden="true">
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <div data-search-results class="max-h-96 overflow-y-auto"></div>
+    <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800 text-xs text-gray-400 flex justify-between">
+      <span>按 ESC 关闭</span>
+      <span>⌘K 打开搜索</span>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  type SearchItem = {
+    slug: string;
+    title: string;
+    description: string;
+    tags: string[];
+    date: string;
+    body?: string;
+  };
+
+  type FuseResult = { item: SearchItem };
+
+  let fuse: { search: (query: string) => FuseResult[] } | null = null;
+  let selectedIndex = 0;
+  let visibleResults: SearchItem[] = [];
+
+  async function loadIndex() {
+    if (fuse) {
+      return fuse;
+    }
+
+    const [{ default: Fuse }, response] = await Promise.all([
+      import('fuse.js'),
+      fetch('/search.json'),
+    ]);
+    const items = (await response.json()) as SearchItem[];
+    fuse = new Fuse(items, {
+      keys: [
+        { name: 'title', weight: 2 },
+        { name: 'description', weight: 1 },
+        { name: 'tags', weight: 1 },
+        { name: 'body', weight: 0.4 },
+      ],
+      threshold: 0.35,
+      ignoreLocation: true,
+      includeScore: true,
+    });
+    return fuse;
+  }
+
+  function renderResults(container: HTMLElement, query: string, results: SearchItem[]) {
+    visibleResults = results;
+    if (!query) {
+      container.innerHTML = '';
+      return;
+    }
+
+    if (results.length === 0) {
+      container.innerHTML = '<div class="px-4 py-8 text-center text-gray-500">未找到相关文章</div>';
+      return;
+    }
+
+    const escapeHtml = (value: string) =>
+      value.replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[char] ?? char);
+
+    container.innerHTML = results
+      .map(
+        (result, index) => `
+          <a
+            href="/blog/${result.slug}"
+            data-search-item="${index}"
+            class="block px-4 py-4 border-b border-gray-100 dark:border-gray-800 last:border-0 ${
+              index === selectedIndex ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+            }"
+          >
+            <h3 class="font-medium text-gray-900 dark:text-gray-100">${escapeHtml(result.title)}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">${escapeHtml(result.description)}</p>
+          </a>
+        `,
+      )
+      .join('');
+  }
+
+  function initSearch() {
+    const root = document.querySelector<HTMLElement>('[data-search-root]');
+    const openButton = root?.querySelector<HTMLButtonElement>('[data-search-open]');
+    const closeButton = root?.querySelector<HTMLButtonElement>('[data-search-close]');
+    const dialog = root?.querySelector<HTMLDialogElement>('[data-search-dialog]');
+    const input = root?.querySelector<HTMLInputElement>('[data-search-input]');
+    const results = root?.querySelector<HTMLElement>('[data-search-results]');
+
+    if (!root || !openButton || !dialog || !input || !results || openButton.dataset.ready === 'true') {
+      return;
+    }
+
+    openButton.dataset.ready = 'true';
+
+    const open = async () => {
+      selectedIndex = 0;
+      dialog.showModal();
+      input.focus();
+      try {
+        await loadIndex();
+      } catch {
+        results.innerHTML = '<div class="px-4 py-8 text-center text-gray-500">搜索暂时不可用</div>';
+      }
+    };
+
+    const close = () => {
+      if (dialog.open) {
+        dialog.close();
+      }
+    };
+
+    dialog.addEventListener('close', () => {
+      input.value = '';
+      results.innerHTML = '';
+      visibleResults = [];
+    });
+
+    openButton.addEventListener('click', () => {
+      void open();
+    });
+    closeButton?.addEventListener('click', close);
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) {
+        close();
+      }
+    });
+
+    input.addEventListener('input', async () => {
+      const query = input.value.trim();
+      selectedIndex = 0;
+      const searcher = await loadIndex();
+      const next = query ? searcher.search(query).map((result) => result.item).slice(0, 10) : [];
+      renderResults(results, query, next);
+    });
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, Math.max(visibleResults.length - 1, 0));
+        renderResults(results, input.value.trim(), visibleResults);
+      }
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, 0);
+        renderResults(results, input.value.trim(), visibleResults);
+      }
+      if (event.key === 'Enter' && visibleResults[selectedIndex]) {
+        event.preventDefault();
+        window.location.href = `/blog/${visibleResults[selectedIndex].slug}`;
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        if (dialog.open) {
+          close();
+        } else {
+          void open();
+        }
+      }
+    });
+  }
+
+  initSearch();
+</script>

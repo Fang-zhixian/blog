@@ -1,9 +1,6 @@
-import { useEffect } from 'react';
-
-export default function CopyCode() {
-  useEffect(() => {
+<script>
+  function enhanceCodeBlocks() {
     const blocks = Array.from(document.querySelectorAll('article pre'));
-    const cleanups: Array<() => void> = [];
 
     blocks.forEach((pre) => {
       if (!(pre instanceof HTMLElement)) {
@@ -21,31 +18,21 @@ export default function CopyCode() {
 
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'absolute top-3 right-3 px-2 py-1 text-xs rounded bg-white/10 text-gray-200 hover:bg-white/20';
+      button.className = 'absolute top-3 right-3 px-2 py-1 text-xs rounded bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-black/10 dark:hover:bg-white/20';
       button.textContent = '复制';
+      button.setAttribute('aria-label', '复制代码');
 
-      const handleClick = async () => {
+      button.addEventListener('click', async () => {
         await navigator.clipboard.writeText(pre.textContent ?? '');
         button.textContent = '已复制';
         window.setTimeout(() => {
           button.textContent = '复制';
         }, 1500);
-      };
-
-      button.addEventListener('click', handleClick);
-      wrapper.appendChild(button);
-
-      cleanups.push(() => {
-        button.removeEventListener('click', handleClick);
-        wrapper.parentNode?.insertBefore(pre, wrapper);
-        wrapper.remove();
       });
+
+      wrapper.appendChild(button);
     });
+  }
 
-    return () => {
-      cleanups.forEach((cleanup) => cleanup());
-    };
-  }, []);
-
-  return null;
-}
+  enhanceCodeBlocks();
+</script>

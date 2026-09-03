@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PostCard from './PostCard';
 import type { PostSummary } from '../types/blog';
@@ -96,29 +95,18 @@ export default function BlogListPagination({
   currentPage,
   totalPages,
   heading = '全部文章',
-  description = '记录技术探索、设计心得和生活感悟',
+  description = '做过的项目，和还没想完的判断',
 }: Props) {
   const displayTags = ['全部', ...tags];
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-12"
-      >
+      <div className="mb-12">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">{heading}</h1>
         <p className="text-gray-500 dark:text-gray-400 text-lg">{description}</p>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-      >
-        <TagFilter tags={displayTags} activeTag={activeTag} />
-      </motion.div>
+      <TagFilter tags={displayTags} activeTag={activeTag} />
 
       <div className="space-y-2">
         {posts.map((post, index) => (

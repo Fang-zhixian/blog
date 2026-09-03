@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Clock, Calendar } from 'lucide-react';
 import type { BlogEntry, PostSummary } from '../types/blog';
 import { getTagPath } from '../utils/posts';
@@ -29,12 +28,7 @@ export default function BlogPost({
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4 }}
-        className="mb-8"
-      >
+      <div className="mb-8">
         <a
           href="/blog"
           className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
@@ -42,14 +36,9 @@ export default function BlogPost({
           <ChevronLeft size={20} />
           <span>返回文章列表</span>
         </a>
-      </motion.div>
+      </div>
 
-      <motion.header
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="mb-12"
-      >
+      <header className="mb-12">
         {tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-3 mb-6">
             {tags.map((tag) => (
@@ -68,7 +57,7 @@ export default function BlogPost({
           {post.data.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-gray-400 dark:text-gray-500 text-sm">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-gray-500 dark:text-gray-400 text-sm">
           <div className="flex items-center gap-2">
             <Calendar size={16} />
             <span>
@@ -83,7 +72,7 @@ export default function BlogPost({
             <span>阅读约 {readingMinutes} 分钟</span>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {post.data.heroImage && (
         <img
@@ -95,17 +84,13 @@ export default function BlogPost({
 
       <hr className="border-gray-200 dark:border-gray-800 mb-12" />
 
-      <motion.article
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+      <article
         className="prose prose-lg prose-gray dark:prose-invert max-w-none
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-28
           prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:leading-snug
           prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-3
           prose-p:leading-[1.85] prose-p:my-5
           prose-a:text-black dark:prose-a:text-white prose-a:no-underline prose-a:border-b prose-a:border-black dark:prose-a:border-white prose-a:hover:text-gray-600 dark:prose-a:hover:text-gray-300
-          prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800
           prose-blockquote:border-l-4 prose-blockquote:border-black dark:prose-blockquote:border-white prose-blockquote:pl-5 prose-blockquote:not-italic prose-blockquote:font-normal prose-blockquote:text-[0.98em] prose-blockquote:leading-[1.8]
           prose-img:rounded-xl
           prose-li:marker:text-gray-400
@@ -114,13 +99,13 @@ export default function BlogPost({
         "
       >
         {children}
-      </motion.article>
+      </article>
 
       {(newerPost || olderPost) && (
         <nav className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 grid gap-6 md:grid-cols-2" aria-label="相邻文章">
           {newerPost ? (
             <a href={`/blog/${newerPost.slug}`} className="group">
-              <p className="text-xs uppercase tracking-widest text-gray-400 mb-2">上一篇</p>
+              <p className="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">上一篇</p>
               <p className="inline-flex items-start gap-2 font-medium group-hover:text-gray-600 dark:group-hover:text-gray-300">
                 <ChevronLeft size={18} className="mt-1 shrink-0" />
                 {newerPost.title}
@@ -131,7 +116,7 @@ export default function BlogPost({
           )}
           {olderPost ? (
             <a href={`/blog/${olderPost.slug}`} className="group md:text-right">
-              <p className="text-xs uppercase tracking-widest text-gray-400 mb-2">下一篇</p>
+              <p className="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">下一篇</p>
               <p className="inline-flex items-start gap-2 font-medium group-hover:text-gray-600 dark:group-hover:text-gray-300 md:flex-row-reverse">
                 <ChevronRight size={18} className="mt-1 shrink-0" />
                 {olderPost.title}
@@ -159,12 +144,7 @@ export default function BlogPost({
         </section>
       )}
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800"
-      >
+      <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
         <a
           href="/blog"
           className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
@@ -172,7 +152,7 @@ export default function BlogPost({
           <ChevronLeft size={20} />
           <span>返回文章列表</span>
         </a>
-      </motion.div>
+      </div>
     </>
   );
 }

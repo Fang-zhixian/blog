@@ -1,0 +1,45 @@
+<button
+  type="button"
+  data-theme-toggle
+  class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+  aria-label="切换为深色模式"
+>
+  <svg data-theme-icon="moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 dark:text-gray-300 dark:hidden" aria-hidden="true">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+  </svg>
+  <svg data-theme-icon="sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden text-gray-300 dark:inline dark:text-yellow-400" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2"></path>
+    <path d="M12 20v2"></path>
+    <path d="m4.93 4.93 1.41 1.41"></path>
+    <path d="m17.66 17.66 1.41 1.41"></path>
+    <path d="M2 12h2"></path>
+    <path d="M20 12h2"></path>
+    <path d="m6.34 17.66-1.41 1.41"></path>
+    <path d="m19.07 4.93-1.41 1.41"></path>
+  </svg>
+</button>
+
+<script>
+  function syncThemeToggle(button: HTMLButtonElement) {
+    const isDark = document.documentElement.classList.contains('dark');
+    button.setAttribute('aria-label', isDark ? '切换为浅色模式' : '切换为深色模式');
+  }
+
+  function initThemeToggle() {
+    const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+    if (!button || button.dataset.ready === 'true') {
+      return;
+    }
+
+    button.dataset.ready = 'true';
+    syncThemeToggle(button);
+    button.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      syncThemeToggle(button);
+    });
+  }
+
+  initThemeToggle();
+</script>

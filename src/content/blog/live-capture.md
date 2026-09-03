@@ -3,6 +3,7 @@ title: "看不了现场，就把直播抓回来：一次活动信息流自动化
 description: "香港 Web3 Festival 去不成，我就把视频号直播流截下来。这篇文章写的是：我怎么找到 DLNA 这条路、命令行为什么不够用、以及我用 Xcode 包了一层 ffmpeg 之后踩过哪些坑。"
 pubDate: "2026-04-20"
 updatedDate: "2026-09-03"
+ogImage: "../../assets/live-capture/native-overview.png"
 tags: ["Web3", "直播录制", "AI工作流", "ffmpeg"]
 draft: false
 ---
@@ -98,7 +99,7 @@ Web3 Festival 不是一个房间、一条流。主会场、分会场、圆桌经
 
 界面很土，就是一个任务列表。每条录制是一张卡片。我刻意没做成“输入 URL，然后祈祷”，因为我自己用的时候最需要的是状态，不是动画。打开现在还是这个样子：
 
-![Live Capture 主界面，上方是新建任务，中间可以按 PID 接管外部 ffmpeg，下方是任务卡片](/images/live-capture/native-overview.png)
+![Live Capture 主界面，上方是新建任务，中间可以按 PID 接管外部 ffmpeg，下方是任务卡片](../../assets/live-capture/native-overview.png)
 
 ### 新建任务时我真正在填什么
 
@@ -112,7 +113,7 @@ Web3 Festival 不是一个房间、一条流。主会场、分会场、圆桌经
 
 点 `Add Recording` 之后，App 调本机 `ffmpeg` 起进程。它不管微信，不管 DLNA，不管投屏。前面那一步仍然是：手机投屏 -> 拿到地址 -> 把地址贴进来。我没有把两段合成一个键，是因为投屏是一次性握手，录制是长时间挂机，两段失败模式完全不同。混在一起，出了问题你不知道是局域网组播没通，还是 ffmpeg 挂了。
 
-![新建录制任务表单，以及按 ffmpeg PID 附加外部任务](/images/live-capture/native-form.png)
+![新建录制任务表单，以及按 ffmpeg PID 附加外部任务](../../assets/live-capture/native-form.png)
 
 ### 每张卡片上那些字段，都是我被坑过之后才加上的
 
@@ -131,7 +132,7 @@ Web3 Festival 不是一个房间、一条流。主会场、分会场、圆桌经
 
 刷新不是一直狂打。一直 `stat` 文件、一直读 ffmpeg 输出，自己也会把风扇打起来。所以卡片上有 Refresh，也有轮询间隔。我要的是“过一会儿看一眼还活着”，不是再写一个监控系统。
 
-![任务卡片上的路径、大小、时长、速度和 ffmpeg 日志](/images/live-capture/native-task-card.png)
+![任务卡片上的路径、大小、时长、速度和 ffmpeg 日志](../../assets/live-capture/native-task-card.png)
 
 ### Pause、Resume、Stop、Kill 我是按信号来理解的
 

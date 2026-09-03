@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import type { PostSummary } from '../types/blog';
 import { getTagPath } from '../utils/posts';
@@ -8,17 +7,11 @@ interface Props {
   index: number;
 }
 
-export default function PostCard({ post, index }: Props) {
+export default function PostCard({ post }: Props) {
   const tags = post.tags.length > 0 ? post.tags : [post.tag];
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.05 }}
-      className="group"
-    >
+    <article className="group">
       <div className="flex flex-col md:flex-row md:items-baseline justify-between border-b border-gray-100 dark:border-gray-800 pb-10 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
         <div className="md:max-w-3xl">
           <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -31,7 +24,7 @@ export default function PostCard({ post, index }: Props) {
                 {tag}
               </a>
             ))}
-            <span className="text-xs text-gray-400 font-medium">{post.date}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{post.date}</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-3 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
             <a href={`/blog/${post.slug}`} className="block">
@@ -46,6 +39,6 @@ export default function PostCard({ post, index }: Props) {
           <ChevronRight size={24} className="text-gray-300 dark:text-gray-600" />
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }

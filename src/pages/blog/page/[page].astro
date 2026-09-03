@@ -27,7 +27,6 @@ const uniqueTags = getUniqueTags(allPosts);
 
 <PageLayout title={`文章 · 第 ${pageNum} 页 - ${siteConfig.name}`} description={siteConfig.description} activePath="/blog">
   <BlogListPagination
-    client:load
     posts={pagePosts}
     tags={uniqueTags}
     currentPage={pageNum}

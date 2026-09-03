@@ -9,9 +9,11 @@ interface Props {
   description: string;
   type?: 'website' | 'article';
   image?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
 }
 
-const { title, description, type, image } = Astro.props;
+const { title, description, type, image, publishedTime, modifiedTime } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -22,7 +24,14 @@ const { title, description, type, image } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={siteConfig.name} />
     <title>{title}</title>
-    <SEO title={title} description={description} type={type} image={image} />
+    <SEO
+      title={title}
+      description={description}
+      type={type}
+      image={image}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+    />
     <script is:inline>
       (function () {
         try {

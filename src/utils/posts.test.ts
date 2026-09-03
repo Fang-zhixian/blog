@@ -127,6 +127,17 @@ describe('post utilities', () => {
     ]);
   });
 
+  it('does not pad related posts with latest articles when tags do not overlap', () => {
+    const current = makePost('current', 'Current', '2024-04-01', ['ffmpeg']);
+    const posts = [
+      current,
+      makePost('newer', 'Newer', '2024-03-01', ['设计']),
+      makePost('older', 'Older', '2024-01-01', ['生活']),
+    ];
+
+    expect(getRelatedPostSummaries(posts, current)).toEqual([]);
+  });
+
   it('returns newer and older neighbors in date order', () => {
     const oldest = makePost('a', 'A', '2024-01-01', ['技术']);
     const middle = makePost('b', 'B', '2024-02-01', ['技术']);

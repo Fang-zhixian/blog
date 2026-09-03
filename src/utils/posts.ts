@@ -115,29 +115,22 @@ export function getRelatedPostSummaries(
   current: BlogEntry,
   limit = 3,
 ): PostSummary[] {
-  const candidates = posts.filter((post) => post.slug !== current.slug);
   const currentTags = new Set(current.data.tags ?? []);
+  if (currentTags.size === 0) {
+    return [];
+  }
 
-  const scored = candidates
+  return posts
+    .filter((post) => post.slug !== current.slug)
     .map((post) => ({
       post,
       score: (post.data.tags ?? []).filter((tag) => currentTags.has(tag)).length,
     }))
+    .filter((item) => item.score > 0)
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       return b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf();
-    });
-
-  const related = scored.filter((item) => item.score > 0).slice(0, limit);
-  if (related.length >= limit) {
-    return related.map((item) => toPostSummary(item.post));
-  }
-
-  const used = new Set(related.map((item) => item.post.slug));
-  const fallback = sortPostsByDate(candidates)
-    .filter((post) => !used.has(post.slug))
-    .slice(0, limit - related.length)
-    .map(toPostSummary);
-
-  return [...related.map((item) => toPostSummary(item.post)), ...fallback];
+    })
+    .slice(0, limit)
+    .map((item) => toPostSummary(item.post));
 }
