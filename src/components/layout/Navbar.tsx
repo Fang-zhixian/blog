@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { siteConfig } from '../../config/site';
 import ThemeToggle from '../ThemeToggle';
 import Search, { type SearchResult } from '../Search';
 import MobileMenu from './MobileMenu';
@@ -40,17 +39,7 @@ export default function Navbar({ navItems, maxWidthClass, activePath, searchInde
             : 'bg-transparent py-6'
         }`}
       >
-        <div className={`${maxWidthClass} mx-auto px-6 flex justify-between items-center`}>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-xl font-bold tracking-tighter"
-          >
-            <a href="/">
-              {siteConfig.name}
-            </a>
-          </motion.div>
-
+        <div className={`${maxWidthClass} mx-auto px-6 flex justify-end items-center`}>
           <div className="hidden md:flex items-center space-x-6">
             <div className="flex space-x-8 text-sm font-medium">
               {navItems.map((item, index) => {
