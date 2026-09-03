@@ -84,39 +84,6 @@ const Hero = ({ avatar }: { avatar: OptimizedImage }) => (
   </section>
 );
 
-const Projects = () => (
-  <section className="mt-32">
-    <h2 className="text-2xl font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-12">项目</h2>
-    <div className="grid gap-10">
-      {siteConfig.featuredProjects.map((project) => (
-        <div key={project.href} className="border-b border-gray-100 dark:border-gray-800 pb-10">
-          <h3 className="text-2xl md:text-3xl font-bold mb-3">
-            <a href={project.href} className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-              {project.title}
-            </a>
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-4">{project.description}</p>
-          <div className="flex flex-wrap gap-6 text-sm font-medium">
-            <a href={project.href} className="border-b border-black dark:border-white pb-0.5 hover:text-gray-500">
-              阅读实践记录
-            </a>
-            {project.repo && (
-              <a
-                href={project.repo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
-              >
-                GitHub
-              </a>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-);
-
 interface Props {
   posts: PostSummary[];
   avatar: OptimizedImage;
@@ -139,8 +106,6 @@ export default function Blog({ posts, avatar }: Props) {
           ))}
         </div>
       </section>
-
-      <Projects />
     </>
   );
 }

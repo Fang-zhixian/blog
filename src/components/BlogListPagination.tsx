@@ -95,7 +95,7 @@ export default function BlogListPagination({
   currentPage,
   totalPages,
   heading = '全部文章',
-  description = '做过的项目，和还没想完的判断',
+  description = '做过、想清楚的事',
 }: Props) {
   const displayTags = ['全部', ...tags];
 
