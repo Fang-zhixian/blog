@@ -26,7 +26,7 @@ export const siteConfig = {
     {
       platform: 'github',
       label: 'GitHub',
-      href: 'https://github.com/Fang-zhixian',
+      href: 'https://github.com/Nothings2Seeyeyeye',
     },
     {
       platform: 'email',
