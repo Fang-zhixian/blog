@@ -8,7 +8,18 @@ export interface SearchItem {
 }
 
 export interface Searcher {
-  search: (query: string) => { item: SearchItem }[];
+  search: (query: string) => { item: SearchItem; matches?: readonly { key?: string; indices: readonly (readonly [number, number])[] }[] }[];
+}
+
+export function getSearchSnippet(body: string | undefined, query: string, ranges: readonly (readonly [number, number])[] = []) {
+  if (!body || !query) return null;
+  const exact = body.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
+  const best = exact >= 0 ? [exact, exact + query.length - 1] : ranges.reduce<readonly [number, number] | null>((longest, range) => !longest || range[1] - range[0] > longest[1] - longest[0] ? range : longest, null);
+  if (!best) return null;
+  const start = Math.max(0, best[0] - 36);
+  const end = Math.min(body.length, Math.max(best[1] + 1, start + 130));
+  const prefix = start > 0 ? '…' : '';
+  return { text: prefix + body.slice(start, end) + (end < body.length ? '…' : ''), start: best[0] - start + prefix.length, end: Math.min(best[1] + 1, end) - start + prefix.length };
 }
 
 export function createSearchLoader(fetchIndex: typeof fetch = fetch) {
@@ -31,6 +42,7 @@ export function createSearchLoader(fetchIndex: typeof fetch = fetch) {
           threshold: 0.35,
           ignoreLocation: true,
           includeScore: true,
+          includeMatches: true,
         });
       })
       .catch((error) => {
@@ -61,10 +73,11 @@ export function initSearch(
   let requestId = 0;
   let selectedIndex = 0;
   let visibleResults: SearchItem[] = [];
+  const snippets = new Map<string, ReturnType<typeof getSearchSnippet>>();
 
   const showStatus = (message: string) => {
     const status = document.createElement('p');
-    status.className = 'px-4 py-8 text-center text-gray-500';
+    status.className = 'px-4 py-8 text-center text-gray-600 dark:text-gray-300';
     status.textContent = message;
     results.replaceChildren(status);
   };
@@ -89,8 +102,17 @@ export function initSearch(
       title.className = 'font-medium text-gray-900 dark:text-gray-100';
       title.textContent = item.title;
       const description = document.createElement('p');
-      description.className = 'text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2';
-      description.textContent = item.description;
+      description.className = 'text-sm text-gray-600 dark:text-gray-300 mt-1 leading-relaxed line-clamp-3';
+      const snippet = snippets.get(item.slug);
+      if (snippet) {
+        description.dataset.searchSnippet = 'true';
+        const mark = document.createElement('mark');
+        mark.className = 'rounded-sm bg-gray-200 text-gray-950 dark:bg-gray-600 dark:text-white';
+        mark.textContent = snippet.text.slice(snippet.start, snippet.end);
+        description.append(snippet.text.slice(0, snippet.start), mark, snippet.text.slice(snippet.end));
+      } else {
+        description.textContent = item.description;
+      }
       link.append(title, description);
       results.append(link);
     });
@@ -106,7 +128,10 @@ export function initSearch(
     try {
       const searcher = await loadIndex();
       if (currentRequest !== requestId || !dialog.open) return;
-      const items = query ? searcher.search(query).map((result) => result.item).slice(0, 10) : [];
+      const hits = query ? searcher.search(query).slice(0, 10) : [];
+      snippets.clear();
+      for (const hit of hits) snippets.set(hit.item.slug, getSearchSnippet(hit.item.body, query, hit.matches?.find((match) => match.key === 'body')?.indices));
+      const items = hits.map((hit) => hit.item);
       renderResults(query, items);
     } catch {
       if (currentRequest === requestId && dialog.open) {
@@ -136,6 +161,7 @@ export function initSearch(
     requestId += 1;
     input.value = '';
     visibleResults = [];
+    snippets.clear();
     results.replaceChildren();
     results.setAttribute('aria-busy', 'false');
   }, { signal });

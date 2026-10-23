@@ -4,6 +4,7 @@ description: "陪伴已经贵成奢侈品。现有语 C 产品留不住人，账
 pubDate: 2026-03-04
 updatedDate: 2026-09-03
 tags: ["AI", "产品分析", "腾讯"]
+category: "产品分析"
 draft: false
 ---
 

@@ -2,13 +2,13 @@
 import { getImage } from 'astro:assets';
 import BlogPost from '../../components/BlogPost';
 import CopyCode from '../../components/CopyCode.astro';
+import PostActions from '../../components/PostActions.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { estimateReadingMinutes, getAdjacentPostSummaries, getRelatedPostSummaries } from '../../utils/posts';
 import { getBlogPosts } from '../../utils/content';
 import { render } from 'astro:content';
 import { siteConfig } from '../../config/site';
-import defaultOgSource from '../../assets/avatar.png';
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
@@ -31,15 +31,15 @@ const relatedPosts = getRelatedPostSummaries(posts, post);
 const { newer, older } = getAdjacentPostSummaries(posts, post);
 const readingMinutes = estimateReadingMinutes(post.body ?? '');
 const showToc = tocHeadings.length > 0;
-const ogImage = await getImage({
-  src: post.data.ogImage ?? defaultOgSource,
+const ogImage = post.data.ogImage ? await getImage({
+  src: post.data.ogImage,
   width: 1200,
   height: 630,
   fit: 'cover',
   format: 'jpg',
   quality: 80,
   layout: 'fixed',
-});
+}) : { src: `/og/${post.slug}.png` };
 const canonicalUrl = new URL(`/blog/${post.slug}/`, siteConfig.url).toString();
 const ogImageUrl = new URL(ogImage.src, siteConfig.url).toString();
 const articleJsonLd = {
@@ -87,6 +87,7 @@ const articleJsonLd = {
       >
         <Content />
       </BlogPost>
+      <PostActions />
       <CopyCode />
     </div>
     {showToc && <TableOfContents headings={tocHeadings} />}

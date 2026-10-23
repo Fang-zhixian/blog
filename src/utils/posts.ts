@@ -1,4 +1,5 @@
-import type { BlogEntry, PostSummary } from '../types/blog';
+import type { BlogEntry, PostSummary, PostCategory } from '../types/blog';
+import { POST_CATEGORIES } from '../content/post-schema.mjs';
 
 export const POSTS_PER_PAGE = 6;
 
@@ -22,6 +23,8 @@ export function toPostSummary(post: BlogEntry): PostSummary {
     date: post.data.pubDate.toISOString().split('T')[0],
     tag: tags[0] || '文章',
     tags,
+    category: post.data.category ?? '技术实践',
+    readingMinutes: estimateReadingMinutes(post.body ?? ''),
   };
 }
 
@@ -34,7 +37,19 @@ export function getAllPostSummaries(posts: BlogEntry[]): PostSummary[] {
 }
 
 export function getUniqueTags(posts: PostSummary[]): string[] {
-  return [...new Set(posts.flatMap((post) => (post.tags.length > 0 ? post.tags : [post.tag])))];
+  return [...new Set(posts.flatMap((post) => post.tags))];
+}
+
+export function getCategoryCounts(posts: PostSummary[]): Record<PostCategory, number> {
+  return Object.fromEntries(POST_CATEGORIES.map((category) => [category, posts.filter((post) => post.category === category).length])) as Record<PostCategory, number>;
+}
+
+export function getCategoryPath(category: PostCategory): string {
+  return `/blog/categories/${encodeURIComponent(category)}`;
+}
+
+export function getCategoryPagePath(category: PostCategory, page: number): string {
+  return page <= 1 ? getCategoryPath(category) : `${getCategoryPath(category)}/${page}`;
 }
 
 export function getTagPath(tag: string): string {

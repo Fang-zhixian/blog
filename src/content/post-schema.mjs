@@ -2,6 +2,7 @@ import { z } from 'astro/zod';
 
 const date = z.union([z.string().trim().min(1), z.date()]).pipe(z.coerce.date());
 const tags = z.array(z.string().trim().min(1));
+export const POST_CATEGORIES = /** @type {const} */ (['技术实践', '产品分析', '随想']);
 
 export const postFrontmatterSchema = z.object({
   title: z.string().trim().min(1),
@@ -11,6 +12,8 @@ export const postFrontmatterSchema = z.object({
   heroImage: z.string().optional(),
   ogImage: z.string().optional(),
   tags: tags.default([]),
+  category: z.enum(POST_CATEGORIES).default('技术实践'),
+  preserveText: z.boolean().default(false),
   draft: z.boolean().default(false),
 });
 

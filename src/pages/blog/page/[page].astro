@@ -1,7 +1,7 @@
 ---
 import BlogListPagination from '../../../components/BlogListPagination';
 import PageLayout from '../../../layouts/PageLayout.astro';
-import { getAllPostSummaries, getUniqueTags, paginatePosts, POSTS_PER_PAGE } from '../../../utils/posts';
+import { getAllPostSummaries, getCategoryCounts, getUniqueTags, paginatePosts, POSTS_PER_PAGE } from '../../../utils/posts';
 import { getBlogPosts } from '../../../utils/content';
 import { siteConfig } from '../../../config/site';
 
@@ -29,6 +29,7 @@ const uniqueTags = getUniqueTags(allPosts);
   <BlogListPagination
     posts={pagePosts}
     tags={uniqueTags}
+    categoryCounts={getCategoryCounts(allPosts)}
     currentPage={pageNum}
     totalPages={totalPages}
   />

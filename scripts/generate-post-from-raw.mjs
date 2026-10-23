@@ -65,7 +65,7 @@ function buildPrompt(rawText, metadata) {
     '',
     '硬性要求：',
     '1) 输出必须是完整 Markdown，以 --- 包裹的 YAML frontmatter 开头。',
-    '2) frontmatter 必须包含：title, description, pubDate, tags, draft。',
+    '2) frontmatter 必须包含：title, description, pubDate, tags, category, draft；category 从「技术实践」「产品分析」「随想」中选择。',
     '3) draft 固定为 true，审核后再由作者发布。',
     '4) 文章结构要清晰，默认包含：背景/问题、思路、实现细节、总结。',
     '5) 若 raw 信息不足，请标明待补充的信息，不要虚构事实或数据。',

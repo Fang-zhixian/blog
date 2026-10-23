@@ -2,7 +2,7 @@
   <button
     type="button"
     data-search-open
-    class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+    class="min-h-11 min-w-11 inline-flex items-center justify-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
     aria-label="打开搜索"
   >
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 dark:text-gray-300" aria-hidden="true">
@@ -26,9 +26,9 @@
         type="search"
         aria-label="搜索文章"
         placeholder="搜索文章..."
-        class="flex-1 px-4 py-4 bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
+        class="min-w-0 flex-1 px-4 py-4 bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
       />
-      <button type="button" data-search-close aria-label="关闭搜索">
+      <button type="button" data-search-close aria-label="关闭搜索" class="min-h-11 min-w-11 inline-flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 hover:text-gray-600" aria-hidden="true">
           <path d="M18 6 6 18"></path>
           <path d="m6 6 12 12"></path>
@@ -36,7 +36,7 @@
       </button>
     </div>
     <div data-search-results aria-live="polite" aria-busy="false" class="max-h-96 overflow-y-auto"></div>
-    <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800 text-xs text-gray-400 flex justify-between">
+    <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800 text-xs text-gray-600 dark:text-gray-300 flex justify-between">
       <span>按 ESC 关闭</span>
       <span>⌘K 打开搜索</span>
     </div>

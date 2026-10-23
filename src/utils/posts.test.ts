@@ -6,6 +6,8 @@ import {
   getAdjacentPostSummaries,
   getAllPostSummaries,
   getBlogPagePath,
+  getCategoryCounts,
+  getCategoryPagePath,
   getPaginationUrls,
   getRecentPostSummaries,
   getRelatedPostSummaries,
@@ -32,6 +34,8 @@ function makePost(
       pubDate: new Date(date),
       tags,
       draft,
+      category: '技术实践',
+      preserveText: false,
     },
     render: async () => ({
       Content: () => null,
@@ -42,6 +46,16 @@ function makePost(
 }
 
 describe('post utilities', () => {
+  it('counts categories independently of tags and keeps category pagination scoped', () => {
+    const posts = getAllPostSummaries([
+      makePost('a', 'A', '2026-01-01', ['AI']),
+      makePost('b', 'B', '2026-01-02', ['AI']),
+    ]);
+    posts[1].category = '随想';
+    expect(getCategoryCounts(posts)).toEqual({ 技术实践: 1, 产品分析: 0, 随想: 1 });
+    expect(getCategoryPagePath('随想', 1)).toBe('/blog/categories/%E9%9A%8F%E6%83%B3');
+    expect(getCategoryPagePath('随想', 2)).toBe('/blog/categories/%E9%9A%8F%E6%83%B3/2');
+  });
   it('returns recent posts in descending date order', () => {
     const posts = [
       makePost('a', 'A', '2024-01-01', ['技术']),
@@ -55,9 +69,9 @@ describe('post utilities', () => {
 
   it('builds a unique tag list from all tags on a post', () => {
     const summaries: PostSummary[] = [
-      { slug: 'a', title: 'A', excerpt: 'A', date: '2024-01-01', tag: '技术', tags: ['技术', 'Astro'] },
-      { slug: 'b', title: 'B', excerpt: 'B', date: '2024-01-02', tag: '设计', tags: ['设计'] },
-      { slug: 'c', title: 'C', excerpt: 'C', date: '2024-01-03', tag: '技术', tags: ['技术'] },
+      { slug: 'a', title: 'A', excerpt: 'A', date: '2024-01-01', tag: '技术', tags: ['技术', 'Astro'], category: '技术实践', readingMinutes: 1 },
+      { slug: 'b', title: 'B', excerpt: 'B', date: '2024-01-02', tag: '设计', tags: ['设计'], category: '产品分析', readingMinutes: 1 },
+      { slug: 'c', title: 'C', excerpt: 'C', date: '2024-01-03', tag: '技术', tags: ['技术'], category: '技术实践', readingMinutes: 1 },
     ];
 
     expect(getUniqueTags(summaries)).toEqual(['技术', 'Astro', '设计']);
@@ -96,8 +110,8 @@ describe('post utilities', () => {
   });
 
   it('paginates without overflowing the last page', () => {
-    const posts = Array.from({ length: 8 }, (_, index) => (
-      { slug: String(index), title: 'T', excerpt: 'E', date: '2024-01-01', tag: '技术', tags: ['技术'] }
+    const posts: PostSummary[] = Array.from({ length: 8 }, (_, index) => (
+      { slug: String(index), title: 'T', excerpt: 'E', date: '2024-01-01', tag: '技术', tags: ['技术'], category: '技术实践', readingMinutes: 1 }
     ));
     const pageTwo = paginatePosts(posts, 2);
 

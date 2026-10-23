@@ -3,6 +3,8 @@ title: "软件的终局会在哪？"
 description: "午睡闭眼的时候，脑袋里突然冒出一个念头：小时候科幻片里，那种只有一片透明玻璃、没有任何复杂结构的手机，在未来还真有可能成真。"
 pubDate: "2026-10-23"
 tags: ["AI", "产品思考", "软件逆向", "云计算"]
+category: "随想"
+preserveText: true
 draft: false
 ---
 

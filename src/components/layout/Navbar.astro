@@ -34,7 +34,7 @@ const { maxWidthClass, activePath } = Astro.props;
     <ThemeToggle />
     <details id="mobile-nav" class="md:hidden">
       <summary
-        class="list-none cursor-pointer p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+        class="list-none cursor-pointer min-h-11 min-w-11 flex items-center justify-center p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-label="打开菜单"
       >
         <span class="icon-menu block">
@@ -51,7 +51,7 @@ const { maxWidthClass, activePath } = Astro.props;
           </svg>
         </span>
       </summary>
-      <div class="fixed top-16 left-0 w-full bg-white dark:bg-black z-40 border-b border-gray-100 dark:border-gray-800">
+      <div class="absolute top-full left-0 w-full bg-white dark:bg-black z-40 border-b border-gray-100 dark:border-gray-800">
         <div class="flex flex-col p-6 space-y-4">
           {navItems.map((item) => (
             <a href={item.href} class="text-lg font-medium text-gray-900 dark:text-gray-100">

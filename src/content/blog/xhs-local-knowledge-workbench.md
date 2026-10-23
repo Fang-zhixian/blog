@@ -4,6 +4,7 @@ description: "小红书收藏很多，真正用起来却很难。我从链接采
 pubDate: "2026-09-03"
 ogImage: "../../assets/xhs-workbench/workspace-desktop.png"
 tags: ["产品思考", "小红书", "AI工作流", "本地知识库", "OCR"]
+category: "技术实践"
 draft: false
 ---
 

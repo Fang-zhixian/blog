@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "posts": {
+    "tencent-ai-companion": {
+      "textSha256": "519dcd4ed12a74148cd2be93a7f4376c48760e431a8e1120a6272b3aa4017e12",
+      "paragraphs": 65
+    },
+    "xhs-local-knowledge-workbench": {
+      "textSha256": "02dcf2e01a08a4c392f79b7794ce654c5d9681a55c9ab107262d12d16cc924d1",
+      "paragraphs": 53
+    },
+    "live-capture": {
+      "textSha256": "36673fd97e3a383a91813f1a87b0cf9061222f9324fa54b88c2d0a6bee47b407",
+      "paragraphs": 58
+    },
+    "software-endgame-glass-phone": {
+      "textSha256": "13a3d53557e6ae1c85d62062a9a21bf0e56cf68ab3c36d5d324f0fa4f3554f3d",
+      "paragraphs": 8
+    }
+  }
+}

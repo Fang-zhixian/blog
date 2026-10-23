@@ -38,9 +38,9 @@ export default function About({ avatar }: Props) {
         <div className="text-center md:text-left">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{siteConfig.author}</h1>
           <p className="text-gray-500 dark:text-gray-400 text-lg mb-6">全栈开发者与前沿技术探索者</p>
-          <p className="text-gray-400 dark:text-gray-500 text-sm mb-6">游走于 AI 应用、现代 Web 与产品思维之间。擅长快速学习与整合，持续思考人机协同的未来。目前痴迷于 Vibe Coding 及一切让创造更愉悦的事物。</p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-6">游走于 AI 应用、现代 Web 与产品思维之间。擅长快速学习与整合，持续思考人机协同的未来。目前痴迷于 Vibe Coding 及一切让创造更愉悦的事物。</p>
 
-          <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-400 dark:text-gray-500">
+          <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center gap-2">
               <MapPin size={16} />
               <span>中国 · 深圳</span>

@@ -38,7 +38,7 @@ const Hero = ({ avatar }: { avatar: OptimizedImage }) => (
 
       <div className="flex-1">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
-          你好，我是<span className="text-gray-400">{siteConfig.author}</span>
+          你好，我是<span className="text-gray-500 dark:text-gray-300">{siteConfig.author}</span>
         </h1>
 
         <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 leading-relaxed mb-8">
@@ -72,6 +72,7 @@ const Hero = ({ avatar }: { avatar: OptimizedImage }) => (
                   target={isExternal ? '_blank' : undefined}
                   rel={isExternal ? 'noopener noreferrer' : undefined}
                   aria-label={contact.label}
+                  className="min-h-11 min-w-11 inline-flex items-center justify-center"
                 >
                   <Icon size={20} className="hover:text-black dark:hover:text-white cursor-pointer transition-colors" />
                 </a>

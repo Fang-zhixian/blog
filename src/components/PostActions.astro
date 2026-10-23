@@ -1,0 +1,17 @@
+<section class="mt-12 rounded-xl border border-gray-200 dark:border-gray-800 p-5 sm:p-6" aria-label="分享与订阅">
+  <p class="font-semibold mb-2">把想法带走，也欢迎下次再来。</p>
+  <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">复制链接分享这篇文章，或用 RSS 阅读器订阅后续更新。</p>
+  <div class="flex flex-wrap items-center gap-3 mt-4">
+    <button type="button" data-copy-post-link class="min-h-11 inline-flex items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black px-5 text-sm font-medium">复制文章链接</button>
+    <a href="/rss.xml" class="min-h-11 inline-flex items-center rounded-full border border-gray-300 dark:border-gray-700 px-5 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800">订阅更新（RSS）</a>
+  </div>
+  <p data-copy-link-status aria-live="polite" class="mt-3 min-h-5 text-sm text-gray-600 dark:text-gray-300"></p>
+  <div data-copy-link-fallback hidden class="mt-2">
+    <label class="text-sm text-gray-700 dark:text-gray-200">文章链接<input readonly data-copy-link-value class="mt-2 block w-full min-h-11 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent px-3 text-sm" /></label>
+  </div>
+</section>
+
+<script>
+  import { initPostActions } from '../scripts/post-actions';
+  initPostActions();
+</script>

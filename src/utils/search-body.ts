@@ -1,16 +1,10 @@
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import { toString } from 'mdast-util-to-string';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { markdownConfig } from '../config/markdown.mjs';
+import { htmlToText } from './html-text.mjs';
 
-const parser = unified().use(remarkParse);
+const processor = createMarkdownProcessor({ ...markdownConfig, syntaxHighlight: false });
 
-export function toSearchBody(markdown: string): string {
-  const tree = parser.parse(markdown);
-
-  return tree.children
-    .filter((node) => node.type !== 'code' && node.type !== 'html' && node.type !== 'definition')
-    .map((node) => toString(node, { includeImageAlt: false, includeHtml: false }))
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+export async function toSearchBody(markdown: string, frontmatter: Record<string, unknown> = {}): Promise<string> {
+  const { code } = await (await processor).render(markdown, { frontmatter });
+  return htmlToText(code);
 }

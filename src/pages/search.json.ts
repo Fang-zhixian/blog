@@ -5,14 +5,14 @@ import { toSearchBody } from '../utils/search-body';
 export const GET: APIRoute = async () => {
   const posts = await getBlogPosts();
 
-  const searchIndex = posts.map((post) => ({
+  const searchIndex = await Promise.all(posts.map(async (post) => ({
     slug: post.slug,
     title: post.data.title,
     description: post.data.description,
     tags: post.data.tags || [],
     date: post.data.pubDate.toISOString(),
-    body: toSearchBody(post.body ?? ''),
-  }));
+    body: await toSearchBody(post.body ?? '', post.data),
+  })));
 
   return new Response(JSON.stringify(searchIndex), {
     status: 200,

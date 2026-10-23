@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, Clock, Calendar } from 'lucide-react';
 import type { BlogEntry, PostSummary } from '../types/blog';
-import { getTagPath } from '../utils/posts';
+import { getTagPath, getCategoryPath } from '../utils/posts';
 
 interface Props {
   post: BlogEntry;
@@ -39,6 +39,7 @@ export default function BlogPost({
       </div>
 
       <header className="mb-12">
+        <a href={getCategoryPath(post.data.category)} className="inline-flex min-h-11 items-center text-sm font-medium text-gray-600 dark:text-gray-300 mb-3 hover:underline">{post.data.category}</a>
         {tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-3 mb-6">
             {tags.map((tag) => (
@@ -85,6 +86,7 @@ export default function BlogPost({
       <hr className="border-gray-200 dark:border-gray-800 mb-12" />
 
       <article
+        data-post-content
         className="prose prose-lg prose-gray dark:prose-invert max-w-none
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-28
           prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:leading-snug
@@ -137,7 +139,7 @@ export default function BlogPost({
                 <p className="font-medium group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
                   {related.title}
                 </p>
-                <p className="text-sm text-gray-400 mt-1">{related.excerpt}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{related.excerpt}</p>
               </a>
             ))}
           </div>

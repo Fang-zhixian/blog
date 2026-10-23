@@ -5,6 +5,7 @@ pubDate: "2026-04-20"
 updatedDate: "2026-09-03"
 ogImage: "../../assets/live-capture/native-overview.png"
 tags: ["Web3", "直播录制", "AI工作流", "ffmpeg"]
+category: "技术实践"
 draft: false
 ---
 

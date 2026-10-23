@@ -1,0 +1,38 @@
+---
+import BlogListPagination from '../../../../components/BlogListPagination';
+import PageLayout from '../../../../layouts/PageLayout.astro';
+import { POST_CATEGORIES } from '../../../../content/post-schema.mjs';
+import { getAllPostSummaries, getCategoryCounts, getUniqueTags, paginatePosts, POSTS_PER_PAGE } from '../../../../utils/posts';
+import { getBlogPosts } from '../../../../utils/content';
+import { siteConfig } from '../../../../config/site';
+
+export async function getStaticPaths() {
+  const allPosts = getAllPostSummaries(await getBlogPosts());
+  return POST_CATEGORIES.flatMap((category) => {
+    const count = allPosts.filter((post) => post.category === category).length;
+    const pages = Math.max(1, Math.ceil(count / POSTS_PER_PAGE));
+    return Array.from({ length: pages }, (_, index) => ({
+      params: { category, page: index === 0 ? undefined : String(index + 1) },
+      props: { category, pageNum: index + 1 },
+    }));
+  });
+}
+
+const { category, pageNum } = Astro.props;
+const allPosts = getAllPostSummaries(await getBlogPosts());
+const categoryPosts = allPosts.filter((post) => post.category === category);
+const { posts, totalPages } = paginatePosts(categoryPosts, pageNum);
+---
+
+<PageLayout title={`${category}${pageNum > 1 ? ` · 第 ${pageNum} 页` : ''} - ${siteConfig.name}`} description={`${category}分类中的文章`} activePath="/blog">
+  <BlogListPagination
+    posts={posts}
+    tags={getUniqueTags(allPosts)}
+    categoryCounts={getCategoryCounts(allPosts)}
+    activeCategory={category}
+    currentPage={pageNum}
+    totalPages={totalPages}
+    heading={category}
+    description={`共 ${categoryPosts.length} 篇文章`}
+  />
+</PageLayout>

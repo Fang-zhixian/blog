@@ -6,6 +6,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { markdownConfig } from './src/config/markdown.mjs';
 
 function readBlogDates() {
   const dir = path.join(process.cwd(), 'src/content/blog');
@@ -66,19 +67,5 @@ export default defineConfig({
     breakpoints: [640, 768, 1024, 1280],
   },
 
-  markdown: {
-    shikiConfig: {
-      themes: {
-        light: 'github-light',
-        dark: 'github-dark',
-      },
-      defaultColor: false,
-    },
-    remarkRehype: {
-      footnoteLabel: '参考文献',
-      footnoteLabelProperties: {
-        className: [],
-      },
-    },
-  },
+  markdown: markdownConfig,
 });

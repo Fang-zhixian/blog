@@ -1,6 +1,8 @@
 import type { CollectionEntry } from 'astro:content';
+import type { POST_CATEGORIES } from '../content/post-schema.mjs';
 
 export type BlogEntry = CollectionEntry<'blog'>;
+export type PostCategory = typeof POST_CATEGORIES[number];
 
 export interface PostSummary {
   slug: string;
@@ -9,6 +11,8 @@ export interface PostSummary {
   date: string;
   tag: string;
   tags: string[];
+  category: PostCategory;
+  readingMinutes: number;
 }
 
 export interface TocHeading {

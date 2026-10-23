@@ -14,7 +14,7 @@ export default function Footer({ maxWidthClass, links, authorName }: Props) {
 
   return (
     <footer
-      className={`${maxWidthClass} mx-auto px-6 py-12 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 dark:text-gray-500`}
+      className={`${maxWidthClass} mx-auto px-6 py-12 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-300`}
     >
       <p>
         © {currentYear} {authorName}. Built with Astro & Tailwind.

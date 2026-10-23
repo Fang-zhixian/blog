@@ -11,7 +11,7 @@ export const navItems = [
 ];
 
 export const footerLinks = [
-  { href: '/rss.xml', label: 'RSS Feed' },
+  { href: '/rss.xml', label: '订阅更新（RSS）' },
   { href: '/privacy', label: '隐私说明' },
   { href: '/sitemap-index.xml', label: 'Sitemap' },
 ];

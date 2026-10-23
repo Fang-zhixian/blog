@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createSearchLoader, initSearch } from './search';
+import { createSearchLoader, getSearchSnippet, initSearch } from './search';
 import type { SearchItem, Searcher } from './search';
 
 const markup = readFileSync('src/components/Search.astro', 'utf8').split('<script>')[0];
@@ -14,6 +14,13 @@ function deferred<T>() {
 }
 
 describe('search index loading', () => {
+  it('extracts the matching passage beyond the article introduction', () => {
+    const body = `${'开头内容。'.repeat(1000)}所以说大道至简🤔.....?`;
+    const snippet = getSearchSnippet(body, '大道至简')!;
+    expect(snippet.text).toContain('所以说大道至简🤔.....?');
+    expect(snippet.text.slice(snippet.start, snippet.end)).toBe('大道至简');
+    expect(snippet.text.length).toBeLessThan(150);
+  });
   it('shares the first request across opening and rapid input, then caches it', async () => {
     const response = deferred<Response>();
     const fetchIndex = vi.fn<typeof fetch>().mockReturnValue(response.promise);
@@ -144,5 +151,14 @@ describe('search dialog', () => {
     expect(dialog.open).toBe(false);
     expect(input.value).toBe('');
     expect(results).toBeEmptyDOMElement();
+  });
+
+  it('shows a highlighted matching paragraph instead of an unrelated description', async () => {
+    dispose = initSearch(root, async () => ({ search: () => [{ item: { ...item('文章'), body: '前文。<script>大道至简</script>。后文。' } }] }));
+    open();
+    type('大道至简');
+    await vi.waitFor(() => expect(results.querySelector('mark')).toHaveTextContent('大道至简'));
+    expect(results.querySelector('[data-search-snippet]')).toHaveTextContent('<script>大道至简</script>');
+    expect(results.querySelector('script')).toBeNull();
   });
 });

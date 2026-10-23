@@ -53,6 +53,7 @@ npm run dev
 title: "文章标题"
 description: "文章简介，会显示在列表页"
 pubDate: "2024-03-25"
+category: "技术实践" # 技术实践 / 产品分析 / 随想
 tags: ["技术", "前端"]
 ---
 
@@ -74,6 +75,10 @@ function hello() {
 }
 ```
 ```
+
+文章分类使用 `category`，可选「技术实践」「产品分析」「随想」，默认为「技术实践」。标签用于辅助主题筛选。文章列表显示阅读时长，未指定 `ogImage` 时会自动生成含标题、作者和日期的中文分享卡片；指定的分享图片会优先使用。
+
+需要逐字保留标点时，在 frontmatter 中设置 `preserveText: true`。它会关闭该篇文章的自动标点替换，正文中的 HTML 段落也会进入全文搜索。文末提供复制文章链接和 RSS 订阅入口。
 
 ## Raw 笔记 -> 发布文章（LLM 生成）
 
@@ -137,6 +142,17 @@ npm run preview
 
 构建完成后，静态文件会生成在 `dist/` 目录。
 
+`npm run build` 会依次执行 Astro / TypeScript 类型检查、回归测试、静态构建和正文校验。GitHub 的 push / pull request 自动检查及 Vercel 构建使用同一入口，任何一步失败都会停止构建。
+
+正文校验会检查渲染文本、搜索索引、分享入口和 PNG 分享图片，并保护 `scripts/content-baselines.json` 中已审核文章的文字、标点与段落数量。新增设置了 `preserveText: true` 的文章时，先运行 `npm run astro -- build` 并预览，确认原文后记录基准：
+
+```bash
+npm run content:baseline -- --slug your-post-slug
+npm run build
+```
+
+有意修改已有文章正文时，同样在预览确认后使用指定 slug 更新基准，并将基准与文章一起提交。普通样式修改不需要更新基准。分享图片使用 Fontsource 的 Noto Sans SC（OFL-1.1），字体仅参与构建，不会作为网页字体下载。
+
 ## 部署平台
 
 可以将 `dist/` 目录部署到任何静态托管服务：
@@ -192,7 +208,8 @@ Vercel 会自动检测到 GitHub 上的更新，并重新部署网站。
 | `npm run dev` | 启动开发服务器 |
 | `npm run check` | 检查 Astro 和 TypeScript 类型 |
 | `npm test` | 运行回归测试 |
-| `npm run build` | 构建生产版本 |
+| `npm run build` | 完整检查并构建生产版本 |
+| `npm run verify:content` | 核对已构建文章正文、搜索和分享产物 |
 | `npm run preview` | 预览构建结果 |
 | `git add .` | 添加所有修改 |
 | `git commit -m "..."` | 提交更新 |
