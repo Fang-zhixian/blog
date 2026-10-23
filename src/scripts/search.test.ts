@@ -132,4 +132,17 @@ describe('search dialog', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
     expect(dialog.open).toBe(false);
   });
+
+  it('closes a populated search dialog on the first Escape key', async () => {
+    dispose = initSearch(root, async () => searcher);
+    open();
+    type('尚未清空的搜索');
+    await vi.waitFor(() => expect(results.querySelector('h3')).toHaveTextContent('尚未清空的搜索'));
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    input.dispatchEvent(escape);
+    expect(escape.defaultPrevented).toBe(true);
+    expect(dialog.open).toBe(false);
+    expect(input.value).toBe('');
+    expect(results).toBeEmptyDOMElement();
+  });
 });

@@ -141,6 +141,11 @@ export function initSearch(
   }, { signal });
   input.addEventListener('input', () => void updateResults(), { signal });
   input.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      close();
+      return;
+    }
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       if (visibleResults.length === 0) return;
