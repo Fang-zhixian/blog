@@ -68,6 +68,7 @@ describe('search dialog', () => {
 
   afterEach(() => {
     dispose?.();
+    vi.useRealTimers();
     document.body.replaceChildren();
   });
 
@@ -102,11 +103,12 @@ describe('search dialog', () => {
     dispose = initSearch(root, () => pending.promise);
     open();
     type('延迟结果');
+    const closingContent = results.innerHTML;
     dialog.close();
     pending.resolve(searcher);
     await pending.promise;
-    expect(results).toBeEmptyDOMElement();
-    expect(input.value).toBe('');
+    expect(dialog.open).toBe(false);
+    expect(results.innerHTML).toBe(closingContent);
   });
 
   it('shows loading and failure feedback, then recovers on further input', async () => {
@@ -116,9 +118,9 @@ describe('search dialog', () => {
     dispose = initSearch(root, load);
     open();
     expect(results).toHaveAttribute('aria-busy', 'true');
-    expect(results).toHaveTextContent('正在加载搜索');
+    expect(results).toHaveTextContent('输入关键词');
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
-    expect(results).toHaveTextContent('正在加载搜索');
+    expect(results).toHaveTextContent('输入关键词');
     await vi.waitFor(() => expect(results).toHaveTextContent('搜索暂时不可用'));
     type('恢复');
     await vi.waitFor(() => expect(results.querySelector('h3')).toHaveTextContent('恢复'));
@@ -134,13 +136,15 @@ describe('search dialog', () => {
     await vi.waitFor(() => expect(results.querySelectorAll('a')).toHaveLength(2));
     expect(results.querySelector('img')).toBeNull();
     expect(results).toHaveTextContent('<img src=x onerror=alert(1)>');
+    const originalLink = results.querySelector('[data-search-item="1"]');
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
     expect(results.querySelector('[data-search-item="1"]')).toHaveClass('bg-gray-100');
+    expect(results.querySelector('[data-search-item="1"]')).toBe(originalLink);
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
     expect(dialog.open).toBe(false);
   });
 
-  it('closes a populated search dialog on the first Escape key', async () => {
+  it('closes on the first Escape without collapsing the exit frame and resets on reopen', async () => {
     dispose = initSearch(root, async () => searcher);
     open();
     type('尚未清空的搜索');
@@ -149,8 +153,10 @@ describe('search dialog', () => {
     input.dispatchEvent(escape);
     expect(escape.defaultPrevented).toBe(true);
     expect(dialog.open).toBe(false);
+    expect(results.querySelector('h3')).toHaveTextContent('尚未清空的搜索');
+    open();
     expect(input.value).toBe('');
-    expect(results).toBeEmptyDOMElement();
+    expect(results).toHaveTextContent('输入关键词');
   });
 
   it('shows a highlighted matching paragraph instead of an unrelated description', async () => {
@@ -160,5 +166,42 @@ describe('search dialog', () => {
     await vi.waitFor(() => expect(results.querySelector('mark')).toHaveTextContent('大道至简'));
     expect(results.querySelector('[data-search-snippet]')).toHaveTextContent('<script>大道至简</script>');
     expect(results.querySelector('script')).toBeNull();
+  });
+
+  it('delays loading feedback and cancels it when the dialog closes', async () => {
+    vi.useFakeTimers();
+    const pending = deferred<Searcher>();
+    dispose = initSearch(root, () => pending.promise);
+    open();
+    expect(results).not.toHaveTextContent('正在加载搜索');
+    await vi.advanceTimersByTimeAsync(150);
+    expect(results).toHaveTextContent('正在加载搜索');
+    const closingContent = results.innerHTML;
+    dialog.close();
+    pending.resolve(searcher);
+    await vi.advanceTimersByTimeAsync(200);
+    expect(dialog.open).toBe(false);
+    expect(results.innerHTML).toBe(closingContent);
+  });
+
+  it('closes the overlay before ordinary navigation but preserves modifier-click behavior', async () => {
+    dispose = initSearch(root, async () => searcher);
+    open(); type('文章');
+    await vi.waitFor(() => expect(results.querySelector('a')).not.toBeNull());
+    const link = results.querySelector('a')!;
+    link.addEventListener('click', (event) => event.preventDefault());
+    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true }));
+    expect(dialog.open).toBe(true);
+    link.click();
+    expect(dialog.open).toBe(false);
+    expect(dialog).toHaveAttribute('data-navigation-closing', 'true');
+  });
+
+  it('does not navigate while Enter is committing an input-method composition', async () => {
+    dispose = initSearch(root, async () => searcher);
+    open(); type('中文');
+    await vi.waitFor(() => expect(results.querySelector('a')).not.toBeNull());
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', isComposing: true }));
+    expect(dialog.open).toBe(true);
   });
 });

@@ -51,7 +51,7 @@ const { maxWidthClass, activePath } = Astro.props;
           </svg>
         </span>
       </summary>
-      <div class="absolute top-full left-0 w-full bg-white dark:bg-black z-40 border-b border-gray-100 dark:border-gray-800">
+      <div class="mobile-nav-panel absolute top-full left-0 w-full bg-white dark:bg-black z-40 border-b border-gray-100 dark:border-gray-800">
         <div class="flex flex-col p-6 space-y-4">
           {navItems.map((item) => (
             <a href={item.href} class="text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -78,5 +78,9 @@ const { maxWidthClass, activePath } = Astro.props;
     summary?.setAttribute('aria-label', mobileNav?.open ? '关闭菜单' : '打开菜单');
   };
   mobileNav?.addEventListener('toggle', syncMenuLabel);
+  mobileNav?.addEventListener('click', (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (event.target instanceof Element && event.target.closest('a')) mobileNav.open = false;
+  });
   syncMenuLabel();
 </script>

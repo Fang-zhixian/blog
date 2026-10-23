@@ -43,6 +43,7 @@ const blogDates = readBlogDates();
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.greedywolf.tech',
+  prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [
     react(),
     sitemap({

@@ -73,7 +73,12 @@ export function initSearch(
   let requestId = 0;
   let selectedIndex = 0;
   let visibleResults: SearchItem[] = [];
+  let loadingTimer: number | undefined;
   const snippets = new Map<string, ReturnType<typeof getSearchSnippet>>();
+  const clearLoadingTimer = () => {
+    window.clearTimeout(loadingTimer);
+    loadingTimer = undefined;
+  };
 
   const showStatus = (message: string) => {
     const status = document.createElement('p');
@@ -85,7 +90,10 @@ export function initSearch(
   const renderResults = (query: string, items: SearchItem[]) => {
     visibleResults = items;
     results.replaceChildren();
-    if (!query) return;
+    if (!query) {
+      showStatus('输入关键词，搜索标题和正文');
+      return;
+    }
     if (items.length === 0) {
       showStatus('未找到相关文章');
       return;
@@ -118,13 +126,27 @@ export function initSearch(
     });
   };
 
+  const updateSelection = () => {
+    results.querySelectorAll<HTMLElement>('[data-search-item]').forEach((link, index) => {
+      const selected = index === selectedIndex;
+      link.classList.toggle('bg-gray-100', selected);
+      link.classList.toggle('dark:bg-gray-800', selected);
+      link.classList.toggle('hover:bg-gray-100', !selected);
+      link.classList.toggle('dark:hover:bg-gray-800', !selected);
+    });
+  };
+
   const updateResults = async () => {
     const query = input.value.trim();
     const currentRequest = ++requestId;
     selectedIndex = 0;
     visibleResults = [];
+    clearLoadingTimer();
     results.setAttribute('aria-busy', 'true');
-    showStatus('正在加载搜索…');
+    if (!query) renderResults('', []);
+    loadingTimer = window.setTimeout(() => {
+      if (currentRequest === requestId && dialog.open) showStatus('正在加载搜索…');
+    }, 120);
     try {
       const searcher = await loadIndex();
       if (currentRequest !== requestId || !dialog.open) return;
@@ -138,35 +160,51 @@ export function initSearch(
         showStatus('搜索暂时不可用，请重新输入或稍后重试');
       }
     } finally {
-      if (currentRequest === requestId) results.setAttribute('aria-busy', 'false');
+      if (currentRequest === requestId) {
+        clearLoadingTimer();
+        results.setAttribute('aria-busy', 'false');
+      }
     }
   };
 
   const open = () => {
     if (dialog.open) return;
+    delete dialog.dataset.navigationClosing;
+    input.value = '';
     dialog.showModal();
     input.focus();
     void updateResults();
   };
-  const close = () => {
+  const close = (forNavigation = false) => {
+    if (forNavigation) dialog.dataset.navigationClosing = 'true';
     if (dialog.open) dialog.close();
   };
 
   openButton.addEventListener('click', open, { signal });
-  closeButton?.addEventListener('click', close, { signal });
+  closeButton?.addEventListener('click', () => close(), { signal });
   dialog.addEventListener('click', (event) => {
     if (event.target === dialog) close();
   }, { signal });
   dialog.addEventListener('close', () => {
     requestId += 1;
-    input.value = '';
+    clearLoadingTimer();
     visibleResults = [];
     snippets.clear();
-    results.replaceChildren();
+    // Leave the final frame intact during the exit transition; reset on reopen.
     results.setAttribute('aria-busy', 'false');
   }, { signal });
   input.addEventListener('input', () => void updateResults(), { signal });
+  results.addEventListener('click', (event) => {
+    const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[data-search-item]') : null;
+    if (!link) return;
+    if (!dialog.open || results.getAttribute('aria-busy') === 'true') {
+      event.preventDefault();
+      return;
+    }
+    if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) close(true);
+  }, { signal });
   input.addEventListener('keydown', (event) => {
+    if (event.isComposing) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       close();
@@ -177,12 +215,12 @@ export function initSearch(
       if (visibleResults.length === 0) return;
       const delta = event.key === 'ArrowDown' ? 1 : -1;
       selectedIndex = Math.max(0, Math.min(selectedIndex + delta, visibleResults.length - 1));
-      renderResults(input.value.trim(), visibleResults);
+      updateSelection();
       results.querySelector<HTMLElement>(`[data-search-item="${selectedIndex}"]`)?.scrollIntoView?.({ block: 'nearest' });
     }
     if (event.key === 'Enter' && visibleResults[selectedIndex]) {
       event.preventDefault();
-      window.location.href = `/blog/${encodeURIComponent(visibleResults[selectedIndex].slug)}`;
+      results.querySelector<HTMLAnchorElement>(`[data-search-item="${selectedIndex}"]`)?.click();
     }
   }, { signal });
   window.addEventListener('keydown', (event) => {
@@ -195,6 +233,10 @@ export function initSearch(
 
   return () => {
     requestId += 1;
+    clearLoadingTimer();
+    close(true);
+    input.value = '';
+    results.replaceChildren();
     controller.abort();
     delete openButton.dataset.ready;
   };

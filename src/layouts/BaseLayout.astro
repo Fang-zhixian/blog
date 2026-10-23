@@ -43,6 +43,10 @@ const { title, description, type, image, publishedTime, modifiedTime } = Astro.p
         } catch (e) {}
       })();
     </script>
+    <script>
+      import { initDisclosureMotion } from '../scripts/disclosure-motion';
+      initDisclosureMotion();
+    </script>
     <slot name="head" />
   </head>
   <body>

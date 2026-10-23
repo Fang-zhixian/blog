@@ -40,7 +40,7 @@ export default function BlogListPagination({
           </a>
         ))}
       </nav>
-      <details className="mb-10 group" open={Boolean(activeTag)}>
+      <details data-animated-disclosure className="mb-10 group" open={Boolean(activeTag)}>
         <summary className="min-h-11 inline-flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
           按主题浏览 <span className="group-open:rotate-180 transition-transform" aria-hidden="true">⌄</span>
           {activeTag && <span className="font-medium text-black dark:text-white">{activeTag}</span>}

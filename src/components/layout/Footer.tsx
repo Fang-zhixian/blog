@@ -21,7 +21,7 @@ export default function Footer({ maxWidthClass, links, authorName }: Props) {
       </p>
       <div className="flex space-x-6 mt-4 md:mt-0">
         {links.map((link) => (
-          <a key={link.label} href={link.href} className="hover:text-black dark:hover:text-white transition-colors">
+          <a key={link.label} href={link.href} data-astro-prefetch={link.href.endsWith('.xml') ? 'false' : undefined} className="hover:text-black dark:hover:text-white transition-colors">
             {link.label}
           </a>
         ))}

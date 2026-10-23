@@ -6,6 +6,9 @@
 
 /* Dark mode CSS variables */
 :root {
+  --motion-fast: 140ms;
+  --motion-normal: 180ms;
+  --motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --color-bg: #fafafa;
   --color-text: #1a1a1a;
   --color-text-muted: #6b7280;
@@ -24,7 +27,88 @@
 /* Apply theme colors */
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
+
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  #site-nav { view-transition-name: site-navigation; }
+
+  ::view-transition { pointer-events: none; }
+
+  ::view-transition-group(root),
+  ::view-transition-group(site-navigation),
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(site-navigation),
+  ::view-transition-new(site-navigation) {
+    animation-duration: var(--motion-normal);
+    animation-timing-function: var(--motion-ease);
+  }
+
+  #mobile-nav[open] .mobile-nav-panel {
+    animation: panel-enter var(--motion-normal) var(--motion-ease);
+  }
+}
+
+@keyframes panel-enter {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Keep the old/new theme snapshots uniform during the short crossfade. */
+html[data-theme-transition] .site-shell,
+html[data-theme-transition] .site-shell * {
+  transition-duration: 0s !important;
+}
+
+dialog[data-search-dialog],
+dialog[data-toc-dialog] {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.99);
+  transition: opacity var(--motion-fast) var(--motion-ease),
+    transform var(--motion-normal) var(--motion-ease),
+    overlay var(--motion-normal) allow-discrete,
+    display var(--motion-normal) allow-discrete;
+}
+
+dialog[data-toc-dialog] { transform: translateY(16px); }
+dialog:not([open]) { pointer-events: none; }
+
+dialog[data-search-dialog][open],
+dialog[data-toc-dialog][open] {
+  opacity: 1;
+  transform: none;
+}
+
+dialog::backdrop {
+  opacity: 0;
+  transition: opacity var(--motion-normal) var(--motion-ease),
+    overlay var(--motion-normal) allow-discrete,
+    display var(--motion-normal) allow-discrete;
+}
+
+dialog[open]::backdrop { opacity: 1; }
+
+@starting-style {
+  dialog[data-search-dialog][open] { opacity: 0; transform: translateY(-6px) scale(0.99); }
+  dialog[data-toc-dialog][open] { opacity: 0; transform: translateY(16px); }
+  dialog[open]::backdrop { opacity: 0; }
+}
+
+/* Do not carry a closing overlay into a page-navigation snapshot. */
+dialog[data-navigation-closing],
+dialog[data-navigation-closing]::backdrop {
+  display: none !important;
+  transition: none !important;
+}
+
+[data-search-item] { transition: background-color var(--motion-fast) var(--motion-ease); }
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -46,9 +130,12 @@ summary:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *, *::before, *::after, dialog::backdrop {
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
 
 /* Keep inline code and fenced code blocks visually distinct. */
