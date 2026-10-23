@@ -118,14 +118,16 @@ export LLM_MODEL="gpt-4.1-mini"
 # 可选
 export LLM_BASE_URL="https://api.openai.com/v1"
 
-# 3) 生成发布稿到 src/content/blog/
+# 3) 生成经过校验的草稿到 src/content/blog/（draft: true）
 npm run raw:generate -- --input raw/your-note.md
 ```
 
 常用参数：
-- `--dry-run`：只看生成结果，不落盘
+- `--dry-run`：调用 LLM 并校验、打印草稿，不落盘
 - `--slug`：手动指定输出文件名
 - `--force`：覆盖已存在文件
+
+生成稿默认保持 `draft: true`。本地预览、审核后改为 `draft: false`，再提交发布。
 
 ---
 

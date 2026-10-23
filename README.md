@@ -89,16 +89,16 @@ export LLM_MODEL="gpt-4.1-mini"
 export LLM_BASE_URL="https://api.openai.com/v1"
 ```
 
-3. 生成发布稿：
+3. 生成文章草稿：
 
 ```bash
 npm run raw:generate -- --input raw/your-note.md
 ```
 
-4. 生成后会输出到 `src/content/blog/*.md`，再执行本地预览和发布流程。
+4. 生成后会校验 YAML 和文章字段，输出到 `src/content/blog/*.md`，并强制设置 `draft: true`。本地预览和审核完成后，将其改为 `draft: false`，再执行发布流程。
 
 常用参数：
-- `--dry-run`：只打印结果，不写文件
+- `--dry-run`：调用 LLM 并校验、打印草稿，不写文件
 - `--slug xxx`：指定输出文件名
 - `--force`：覆盖已存在文章
 
@@ -190,6 +190,8 @@ Vercel 会自动检测到 GitHub 上的更新，并重新部署网站。
 | 命令 | 说明 |
 |------|------|
 | `npm run dev` | 启动开发服务器 |
+| `npm run check` | 检查 Astro 和 TypeScript 类型 |
+| `npm test` | 运行回归测试 |
 | `npm run build` | 构建生产版本 |
 | `npm run preview` | 预览构建结果 |
 | `git add .` | 添加所有修改 |

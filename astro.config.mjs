@@ -49,7 +49,7 @@ export default defineConfig({
         const match = item.url.match(/\/blog\/([^/]+)\/?$/);
         const slug = match?.[1];
         if (slug && slug !== 'tags' && slug !== 'page' && blogDates[slug]) {
-          item.lastmod = new Date(blogDates[slug]);
+          item.lastmod = new Date(blogDates[slug]).toISOString();
         }
         return item;
       },

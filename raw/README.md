@@ -1,7 +1,7 @@
 # Raw Notes Workflow
 
-`raw/` is for private draft notes.  
-Use the generator script to turn a raw note into a publishable file in `src/content/blog/`.
+`raw/` holds source notes and is tracked by Git; it does not provide private storage.
+Use the generator script to turn a raw note into a validated draft in `src/content/blog/`.
 
 ## 1) Create a raw note
 
@@ -48,10 +48,11 @@ npm run raw:generate -- --input raw/my-topic.md
 
 Output:
 - `src/content/blog/astro-perf-practice.md` (or based on filename/title when slug is missing)
+- YAML and required article fields are validated before writing; generated posts always use `draft: true`.
 
 ## 3) Review + publish
 
-Review the generated markdown, then:
+Preview and review the generated markdown, then change `draft: true` to `draft: false` before publishing:
 
 ```bash
 npm run dev
@@ -62,6 +63,6 @@ git push
 
 ## Useful flags
 
-- `--dry-run`: print generated markdown without writing files
+- `--dry-run`: call the LLM and print a validated draft without writing files
 - `--slug xxx`: force output filename
 - `--force`: overwrite existing target markdown

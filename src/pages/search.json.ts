@@ -1,17 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getBlogPosts } from '../utils/content';
-
-function toSearchBody(text: string): string {
-  return text
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`[^`]*`/g, ' ')
-    .replace(/!\[[^\]]*]\([^)]*\)/g, ' ')
-    .replace(/\[[^\]]*]\([^)]*\)/g, ' ')
-    .replace(/[#>*_~\-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 4000);
-}
+import { toSearchBody } from '../utils/search-body';
 
 export const GET: APIRoute = async () => {
   const posts = await getBlogPosts();
