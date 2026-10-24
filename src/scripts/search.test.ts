@@ -254,4 +254,12 @@ describe('search dialog', () => {
     expect(dialog).not.toHaveAttribute('data-navigation-closing');
     expect(dialog.style.getPropertyValue('--search-viewport-height')).toBe(`${window.innerHeight}px`);
   });
+
+  it.each(['site:toc-open', 'site:image-open'])('releases the search overlay before %s', (eventName) => {
+    dispose = initSearch(root, async () => searcher);
+    open();
+    document.dispatchEvent(new Event(eventName));
+    expect(dialog.open).toBe(false);
+    expect(dialog).toHaveAttribute('data-navigation-closing', 'true');
+  });
 });

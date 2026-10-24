@@ -117,6 +117,11 @@ describe('mobile navigation', () => {
     document.dispatchEvent(new Event('site:search-open'));
     expect(menu.open).toBe(false);
     expect(animations[0].cancel).toHaveBeenCalled();
+    for (const eventName of ['site:toc-open', 'site:image-open']) {
+      open();
+      document.dispatchEvent(new Event(eventName));
+      expect(menu.open).toBe(false);
+    }
     open();
     document.querySelector('[data-theme-toggle]')!.dispatchEvent(new Event('pointerdown', { bubbles: true }));
     expect(menu.open).toBe(false);

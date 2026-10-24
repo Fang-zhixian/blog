@@ -87,7 +87,7 @@ export default function BlogPost({
 
       <article
         data-post-content
-        className="prose prose-lg prose-gray dark:prose-invert max-w-none
+        className="prose prose-lg prose-gray dark:prose-invert min-w-0 max-w-none
           prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-28
           prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:leading-snug
           prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-3

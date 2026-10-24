@@ -114,6 +114,8 @@ export function initNavigation(root: ParentNode = document) {
     summary.focus({ preventScroll: true });
   }, { signal });
   document.addEventListener('site:search-open', closeImmediately, { signal });
+  document.addEventListener('site:toc-open', closeImmediately, { signal });
+  document.addEventListener('site:image-open', closeImmediately, { signal });
   window.addEventListener('scroll', onScroll, { passive: true, signal });
   window.addEventListener('pagehide', closeImmediately, { signal });
   window.addEventListener('pageshow', onScroll, { signal });

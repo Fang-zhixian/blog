@@ -246,6 +246,8 @@ export function initSearch(
     }
   }, { signal });
   window.addEventListener('pagehide', () => close(true), { signal });
+  document.addEventListener('site:toc-open', () => close(true), { signal });
+  document.addEventListener('site:image-open', () => close(true), { signal });
 
   return () => {
     requestId += 1;

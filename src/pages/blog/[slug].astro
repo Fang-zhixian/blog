@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets';
 import BlogPost from '../../components/BlogPost';
 import CopyCode from '../../components/CopyCode.astro';
+import ArticleImages from '../../components/ArticleImages.astro';
 import PostActions from '../../components/PostActions.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import PageLayout from '../../layouts/PageLayout.astro';
@@ -77,7 +78,7 @@ const articleJsonLd = {
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
   <div class={showToc ? 'xl:grid xl:grid-cols-[minmax(0,48rem)_14rem] xl:justify-center xl:gap-16' : 'max-w-3xl mx-auto'}>
-    <div class={showToc ? 'max-w-3xl xl:max-w-none' : undefined}>
+    <div class={showToc ? 'min-w-0 max-w-3xl mx-auto xl:max-w-none' : undefined}>
       <BlogPost
         post={post}
         readingMinutes={readingMinutes}
@@ -89,7 +90,13 @@ const articleJsonLd = {
       </BlogPost>
       <PostActions />
       <CopyCode />
+      <ArticleImages />
     </div>
     {showToc && <TableOfContents headings={tocHeadings} />}
   </div>
 </PageLayout>
+
+<script>
+  import { initArticleTables } from '../../scripts/article-tables';
+  initArticleTables();
+</script>

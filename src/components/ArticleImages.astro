@@ -1,0 +1,18 @@
+<dialog data-image-dialog aria-label="查看文章图片" class="article-image-dialog">
+  <header class="article-image-toolbar">
+    <p class="min-w-0 flex-1 text-sm font-medium">查看图片</p>
+    <button type="button" data-image-zoom aria-pressed="false" class="min-h-11 px-3 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">放大</button>
+    <button type="button" data-image-close aria-label="关闭图片" class="min-h-11 min-w-11 inline-flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12" /></svg>
+    </button>
+  </header>
+  <div data-image-stage tabindex="0" aria-label="图片查看区域，可滚动查看放大的图片">
+    <div data-image-canvas><img data-image-full alt="" decoding="async" /></div>
+  </div>
+  <p data-image-status role="status" class="article-image-status">点按放大查看细节</p>
+</dialog>
+
+<script>
+  import { initArticleImages } from '../scripts/article-images';
+  initArticleImages();
+</script>
