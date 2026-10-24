@@ -13,6 +13,7 @@ interface Props {
   modifiedTime?: Date;
   maxWidthClass?: string;
   activePath?: string;
+  mainSpacingClass?: string;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
   modifiedTime,
   maxWidthClass = 'max-w-5xl',
   activePath,
+  mainSpacingClass = 'pt-32 pb-20',
 } = Astro.props;
 ---
 
@@ -44,7 +46,7 @@ const {
       跳到正文
     </a>
     <Navbar maxWidthClass={maxWidthClass} activePath={activePath} />
-    <main id="main-content" tabindex="-1" class={`${maxWidthClass} mx-auto px-6 pt-32 pb-20`}>
+    <main id="main-content" tabindex="-1" class={`${maxWidthClass} mx-auto px-6 ${mainSpacingClass}`}>
       <slot />
     </main>
     <Footer maxWidthClass={maxWidthClass} links={[...footerLinks]} authorName={siteConfig.author} />

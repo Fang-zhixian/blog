@@ -20,32 +20,33 @@ interface Props {
 export default function About({ avatar }: Props) {
   return (
     <>
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-16">
-        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 flex-shrink-0">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-8 mb-12 md:mb-16">
+        <div className="w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 flex-shrink-0">
           <img
             src={avatar.src}
             srcSet={avatar.srcSet}
-            sizes="160px"
+            sizes="(min-width: 768px) 160px, 112px"
             alt={`${siteConfig.author}的头像`}
             width={avatar.width}
             height={avatar.height}
             className="w-full h-full object-cover"
             loading="eager"
+            fetchPriority="high"
             decoding="async"
           />
         </div>
 
-        <div className="text-center md:text-left">
+        <div className="min-w-0 text-center sm:text-left">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{siteConfig.author}</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-lg mb-6">全栈开发者与前沿技术探索者</p>
-          <p className="text-gray-600 dark:text-gray-300 text-sm mb-6">游走于 AI 应用、现代 Web 与产品思维之间。擅长快速学习与整合，持续思考人机协同的未来。目前痴迷于 Vibe Coding 及一切让创造更愉悦的事物。</p>
+          <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg leading-relaxed mb-4 md:mb-6">全栈开发者与前沿技术探索者</p>
+          <p className="text-left text-pretty text-gray-600 dark:text-gray-300 text-base leading-[1.75] mb-5 md:mb-6">游走于 AI 应用、现代 Web 与产品思维之间。擅长快速学习与整合，持续思考人机协同的未来。目前痴迷于 Vibe Coding 及一切让创造更愉悦的事物。</p>
 
-          <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-600 dark:text-gray-300">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-2 text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex items-center gap-2 whitespace-nowrap">
               <MapPin size={16} />
               <span>中国 · 深圳</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 whitespace-nowrap">
               <Calendar size={16} />
               <span>从事开发 2+ 年</span>
             </div>
@@ -53,7 +54,7 @@ export default function About({ avatar }: Props) {
         </div>
       </div>
 
-      <div className="prose prose-lg prose-gray dark:prose-invert max-w-none mb-16">
+      <div className="prose prose-base sm:prose-lg prose-gray dark:prose-invert max-w-none break-words prose-p:leading-[1.85] mb-12 md:mb-16">
         <h2>关于我</h2>
         <p>
           你好，我是方植贤，一名对技术与创造充满热忱的开发者。
@@ -72,24 +73,24 @@ export default function About({ avatar }: Props) {
         </p>
       </div>
 
-      <div className="mb-16">
+      <div className="mb-12 md:mb-16">
         <h3 className="text-lg font-bold mb-4">技术全景扫描者</h3>
-        <div className="flex flex-wrap gap-3 mb-6">
+        <div className="flex flex-wrap gap-2 md:gap-3 mb-8">
           {['React', 'TypeScript', 'Astro', 'Next.js', 'Tailwind CSS', 'Node.js', 'Figma', 'UI/UX'].map((skill) => (
             <span
               key={skill}
-              className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
+              className="px-3 md:px-4 py-1.5 md:py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-medium rounded-full"
             >
               {skill}
             </span>
           ))}
         </div>
         <h3 className="text-lg font-bold mb-4">AI 与前沿探索</h3>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 md:gap-3">
           {['AI Agent', 'LangChain', 'LangGraph', 'Vibe Coding', '机器学习', '数据分析'].map((skill) => (
             <span
               key={skill}
-              className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
+              className="px-3 md:px-4 py-1.5 md:py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-medium rounded-full"
             >
               {skill}
             </span>
@@ -99,7 +100,7 @@ export default function About({ avatar }: Props) {
 
       <div>
         <h3 className="text-lg font-bold mb-4">联系方式</h3>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-3 md:gap-4">
           {siteConfig.contacts.map((contact) => {
             const Icon = CONTACT_ICON_MAP[contact.platform];
             const isExternal = contact.href.startsWith('http');

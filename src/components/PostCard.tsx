@@ -26,7 +26,7 @@ export default function PostCard({ post }: Props) {
             {post.excerpt}
           </p>
         </div>
-        <div className="mt-4 md:mt-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div aria-hidden="true" className="hidden md:block opacity-0 group-hover:opacity-100 transition-opacity">
           <ChevronRight size={24} className="text-gray-300 dark:text-gray-600" />
         </div>
       </div>

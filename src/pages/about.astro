@@ -28,7 +28,7 @@ const personJsonLd = {
 };
 ---
 
-<PageLayout title={`关于 - ${siteConfig.name}`} description={`关于我 - ${siteConfig.author}`} maxWidthClass="max-w-3xl" activePath="/about">
+<PageLayout title={`关于 - ${siteConfig.name}`} description={`关于我 - ${siteConfig.author}`} maxWidthClass="max-w-3xl" activePath="/about" mainSpacingClass="pt-28 pb-16 md:pt-32 md:pb-20">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
   <About avatar={avatar} />
 </PageLayout>

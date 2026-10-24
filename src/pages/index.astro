@@ -37,8 +37,8 @@ const websiteJsonLd = {
 };
 ---
 
-<PageLayout title={siteConfig.title} description={siteConfig.description} activePath="/">
+<PageLayout title={siteConfig.title} description={siteConfig.description} activePath="/" mainSpacingClass="pt-28 pb-16 md:pt-32 md:pb-20">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
-  <link slot="head" rel="preload" as="image" href={avatar.src} type="image/webp" />
+  <link slot="head" rel="preload" as="image" href={avatar.src} imagesrcset={avatar.srcSet} imagesizes="(min-width: 768px) 160px, 112px" type="image/webp" />
   <Blog posts={recentPosts} avatar={avatar} />
 </PageLayout>

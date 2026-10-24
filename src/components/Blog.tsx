@@ -15,20 +15,21 @@ const CONTACT_ICON_MAP = {
 } as const;
 
 const Hero = ({ avatar }: { avatar: OptimizedImage }) => (
-  <section className="mb-32">
-    <div className="flex flex-col md:flex-row items-start gap-12">
+  <section className="mb-16 sm:mb-24 md:mb-32">
+    <div className="flex flex-col sm:flex-row items-start gap-6 md:gap-12">
       <div className="flex-shrink-0">
         <div className="relative">
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800">
+          <div className="w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800">
             <img
               src={avatar.src}
               srcSet={avatar.srcSet}
-              sizes="160px"
+              sizes="(min-width: 768px) 160px, 112px"
               alt={`${siteConfig.author}的头像`}
               width={avatar.width}
               height={avatar.height}
               className="w-full h-full object-cover"
               loading="eager"
+              fetchPriority="high"
               decoding="async"
             />
           </div>
@@ -36,32 +37,32 @@ const Hero = ({ avatar }: { avatar: OptimizedImage }) => (
         </div>
       </div>
 
-      <div className="flex-1">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
-          你好，我是<span className="text-gray-500 dark:text-gray-300">{siteConfig.author}</span>
+      <div className="min-w-0 flex-1">
+        <h1 className="text-[2rem] sm:text-4xl md:text-6xl font-bold tracking-tight leading-tight md:leading-[1.1] mb-4 md:mb-6">
+          你好，我是<span className="inline-block text-gray-500 dark:text-gray-300">{siteConfig.author}</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 leading-relaxed mb-8">
+        <p className="text-base sm:text-lg md:text-xl text-pretty text-gray-600 dark:text-gray-300 leading-[1.75] md:leading-relaxed mb-6 md:mb-8">
           全栈开发者与前沿技术探索者。游走于 AI 应用、现代 Web 与产品思维之间。擅长快速学习与整合，持续思考人机协同的未来。目前痴迷于 Vibe Coding 及一切让创造更愉悦的事物。
         </p>
 
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8">
           {['AI Agent', 'Vibe Coding', '全栈开发', '产品设计'].map((tag) => (
             <span
               key={tag}
-              className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
+              className="px-3 md:px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-medium rounded-full"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="flex items-center gap-6">
-          <a href="/blog" className="flex items-center space-x-2 text-sm font-bold border-b-2 border-black dark:border-white pb-1 hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400 transition-all">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a href="/blog" className="min-h-11 inline-flex items-center gap-2 text-sm font-bold border-b-2 border-black dark:border-white pb-1 hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400 transition-colors">
             <span>查看我的文章</span>
             <ChevronRight size={16} />
           </a>
-          <div className="flex items-center gap-4 text-gray-400">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4 text-gray-500 dark:text-gray-400">
             {siteConfig.contacts.map((contact) => {
               const Icon = CONTACT_ICON_MAP[contact.platform];
               const isExternal = contact.href.startsWith('http');
@@ -96,12 +97,12 @@ export default function Blog({ posts, avatar }: Props) {
       <Hero avatar={avatar} />
 
       <section id="posts">
-        <div className="flex justify-between items-end mb-12">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 md:mb-12">
           <h2 className="text-2xl font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">近期文章</h2>
-          <a href="/blog" className="text-sm font-medium hover:underline">浏览全部</a>
+          <a href="/blog" className="min-h-11 inline-flex items-center text-sm font-medium hover:underline">浏览全部</a>
         </div>
 
-        <div className="grid gap-12">
+        <div className="grid gap-8 md:gap-12">
           {posts.map((post, index) => (
             <PostCard key={post.slug} post={post} index={index} />
           ))}
