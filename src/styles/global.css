@@ -51,14 +51,6 @@ html:has(dialog[open]) {
     animation-timing-function: var(--motion-ease);
   }
 
-  #mobile-nav[open] .mobile-nav-panel {
-    animation: panel-enter var(--motion-normal) var(--motion-ease);
-  }
-}
-
-@keyframes panel-enter {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Keep the old/new theme snapshots uniform during the short crossfade. */
@@ -79,6 +71,24 @@ dialog[data-toc-dialog] {
 
 dialog[data-toc-dialog] { transform: translateY(16px); }
 dialog:not([open]) { pointer-events: none; }
+
+dialog[data-search-dialog] {
+  --search-gap: 5rem;
+  top: calc(var(--search-viewport-top, 0px) + var(--search-gap) + env(safe-area-inset-top, 0px));
+  right: 0;
+  bottom: auto;
+  left: 0;
+  margin: 0 auto;
+  max-height: min(32rem, calc(var(--search-viewport-height, 100dvh) - var(--search-gap) * 2 - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  overflow: hidden;
+  flex-direction: column;
+}
+
+dialog[data-search-dialog][open] { display: flex; }
+
+@media (max-width: 767px), (max-height: 500px) {
+  dialog[data-search-dialog] { --search-gap: 1rem; }
+}
 
 dialog[data-search-dialog][open],
 dialog[data-toc-dialog][open] {

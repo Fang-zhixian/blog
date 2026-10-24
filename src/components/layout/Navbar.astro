@@ -52,9 +52,9 @@ const { maxWidthClass, activePath } = Astro.props;
         </span>
       </summary>
       <div class="mobile-nav-panel absolute top-full left-0 w-full bg-white dark:bg-black z-40 border-b border-gray-100 dark:border-gray-800">
-        <div class="flex flex-col p-6 space-y-4">
+        <div class="flex flex-col p-6 gap-1">
           {navItems.map((item) => (
-            <a href={item.href} class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <a href={item.href} aria-current={activePath === item.href ? 'page' : undefined} class="flex items-center min-h-11 text-lg font-medium text-gray-900 dark:text-gray-100">
               {item.name}
             </a>
           ))}
@@ -65,22 +65,6 @@ const { maxWidthClass, activePath } = Astro.props;
 </nav>
 
 <script>
-  const nav = document.getElementById('site-nav');
-  const onScroll = () => {
-    nav?.classList.toggle('is-scrolled', window.scrollY > 20);
-  };
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
-
-  const mobileNav = document.querySelector<HTMLDetailsElement>('#mobile-nav');
-  const summary = mobileNav?.querySelector('summary');
-  const syncMenuLabel = () => {
-    summary?.setAttribute('aria-label', mobileNav?.open ? '关闭菜单' : '打开菜单');
-  };
-  mobileNav?.addEventListener('toggle', syncMenuLabel);
-  mobileNav?.addEventListener('click', (event) => {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    if (event.target instanceof Element && event.target.closest('a')) mobileNav.open = false;
-  });
-  syncMenuLabel();
+  import { initNavigation } from '../../scripts/navigation';
+  initNavigation();
 </script>

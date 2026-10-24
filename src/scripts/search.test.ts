@@ -68,6 +68,7 @@ describe('search dialog', () => {
 
   afterEach(() => {
     dispose?.();
+    vi.unstubAllGlobals();
     vi.useRealTimers();
     document.body.replaceChildren();
   });
@@ -203,5 +204,54 @@ describe('search dialog', () => {
     await vi.waitFor(() => expect(results.querySelector('a')).not.toBeNull());
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', isComposing: true }));
     expect(dialog.open).toBe(true);
+  });
+
+  it('hands off from the mobile menu before showing search by button or shortcut', () => {
+    const handoff = vi.fn(() => expect(dialog.open).toBe(false));
+    document.addEventListener('site:search-open', handoff);
+    dispose = initSearch(root, async () => searcher);
+    open();
+    dialog.close();
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+    expect(handoff).toHaveBeenCalledTimes(2);
+    document.removeEventListener('site:search-open', handoff);
+  });
+
+  it('fits the visual viewport as a software keyboard opens without moving the exit frame', () => {
+    const viewport = Object.assign(new window.EventTarget(), { height: 844, offsetTop: 0 });
+    vi.stubGlobal('visualViewport', viewport);
+    dispose = initSearch(root, async () => searcher);
+    open();
+    expect(dialog.style.getPropertyValue('--search-viewport-height')).toBe('844px');
+    viewport.height = 320;
+    viewport.offsetTop = 24;
+    viewport.dispatchEvent(new Event('resize'));
+    expect(dialog.style.getPropertyValue('--search-viewport-height')).toBe('320px');
+    expect(dialog.style.getPropertyValue('--search-viewport-top')).toBe('24px');
+    dialog.close();
+    viewport.height = 844;
+    viewport.offsetTop = 0;
+    viewport.dispatchEvent(new Event('resize'));
+    expect(dialog.style.getPropertyValue('--search-viewport-height')).toBe('320px');
+    expect(dialog.style.getPropertyValue('--search-viewport-top')).toBe('0px');
+    open();
+    expect(dialog.style.getPropertyValue('--search-viewport-height')).toBe('844px');
+    dispose?.();
+    viewport.height = 400;
+    viewport.dispatchEvent(new Event('scroll'));
+    expect(dialog.style.getPropertyValue('--search-viewport-height')).toBe('');
+    dispose = undefined;
+  });
+
+  it('closes search before history caching and remains usable after returning', () => {
+    dispose = initSearch(root, async () => searcher);
+    open();
+    window.dispatchEvent(new Event('pagehide'));
+    expect(dialog.open).toBe(false);
+    expect(dialog).toHaveAttribute('data-navigation-closing', 'true');
+    open();
+    expect(dialog.open).toBe(true);
+    expect(dialog).not.toHaveAttribute('data-navigation-closing');
+    expect(dialog.style.getPropertyValue('--search-viewport-height')).toBe(`${window.innerHeight}px`);
   });
 });

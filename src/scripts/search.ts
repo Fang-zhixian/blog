@@ -70,6 +70,19 @@ export function initSearch(
   openButton.dataset.ready = 'true';
   const controller = new window.AbortController();
   const { signal } = controller;
+  const viewport = window.visualViewport;
+  const syncViewport = () => {
+    dialog.style.setProperty('--search-viewport-height', `${viewport?.height || window.innerHeight}px`);
+    dialog.style.setProperty('--search-viewport-top', `${Math.max(0, viewport?.offsetTop || 0)}px`);
+  };
+  const onViewportChange = () => {
+    // Freeze the exit height, but follow keyboard panning to keep its screen position.
+    if (dialog.open) syncViewport();
+    else dialog.style.setProperty('--search-viewport-top', `${Math.max(0, viewport?.offsetTop || 0)}px`);
+  };
+  viewport?.addEventListener('resize', onViewportChange, { signal });
+  viewport?.addEventListener('scroll', onViewportChange, { signal });
+  window.addEventListener('resize', onViewportChange, { signal });
   let requestId = 0;
   let selectedIndex = 0;
   let visibleResults: SearchItem[] = [];
@@ -82,7 +95,7 @@ export function initSearch(
 
   const showStatus = (message: string) => {
     const status = document.createElement('p');
-    status.className = 'px-4 py-8 text-center text-gray-600 dark:text-gray-300';
+    status.className = 'min-h-28 px-4 py-8 text-center text-gray-600 dark:text-gray-300';
     status.textContent = message;
     results.replaceChildren(status);
   };
@@ -169,10 +182,12 @@ export function initSearch(
 
   const open = () => {
     if (dialog.open) return;
+    document.dispatchEvent(new Event('site:search-open'));
     delete dialog.dataset.navigationClosing;
     input.value = '';
+    syncViewport();
     dialog.showModal();
-    input.focus();
+    input.focus({ preventScroll: true });
     void updateResults();
   };
   const close = (forNavigation = false) => {
@@ -230,6 +245,7 @@ export function initSearch(
       else open();
     }
   }, { signal });
+  window.addEventListener('pagehide', () => close(true), { signal });
 
   return () => {
     requestId += 1;
@@ -238,6 +254,8 @@ export function initSearch(
     input.value = '';
     results.replaceChildren();
     controller.abort();
+    dialog.style.removeProperty('--search-viewport-height');
+    dialog.style.removeProperty('--search-viewport-top');
     delete openButton.dataset.ready;
   };
 }
