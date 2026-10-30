@@ -4,7 +4,7 @@ import { createSearchLoader, getSearchSnippet, initSearch } from './search';
 import type { SearchItem, Searcher } from './search';
 
 const markup = readFileSync('src/components/Search.astro', 'utf8').split('<script>')[0];
-const item = (title: string): SearchItem => ({ slug: title, title, description: '描述', tags: [], date: '2026-10-23' });
+const item = (title: string): SearchItem => ({ slug: title, kind: 'article', href: `/blog/${encodeURIComponent(title)}`, title, description: '描述', tags: [], date: '2026-10-23' });
 const searcher: Searcher = { search: (query) => [{ item: item(query) }] };
 
 function deferred<T>() {
@@ -44,6 +44,30 @@ describe('search index loading', () => {
     expect((await load()).search('恢复')).toHaveLength(1);
     expect(fetchIndex).toHaveBeenCalledTimes(2);
   });
+
+  it('prefers exact short technical terms over weak fuzzy matches', async () => {
+    const entries: SearchItem[] = [
+      { ...item('拾页'), tags: ['OCR'], description: '对图片执行 OCR', body: '按需识别素材。' },
+      { ...item('陪伴产品'), body: 'A report by Beken Corp. (2025).' },
+      { ...item('直播录制'), body: 'Use the --record option.' },
+    ];
+    const load = createSearchLoader(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(entries))));
+    expect((await load()).search('OCR').map((result) => result.item.title)).toEqual(['拾页']);
+  });
+
+  it('finds titles and summaries in both languages across content types', async () => {
+    const entries: SearchItem[] = [
+      { ...item('拾页文章'), titleEn: 'Shiye article', description: '本地素材', descriptionEn: 'A searchable collection' },
+      { ...item('拾页'), slug: 'project:shiye', kind: 'project', href: '/projects/shiye/', titleEn: 'Shiye', descriptionEn: 'A local collection workspace' },
+      { ...item('按需 OCR'), slug: 'knowledge:ocr', kind: 'knowledge', href: '/knowledge/ocr/', titleEn: 'On-Demand OCR' },
+      { ...item('关于'), slug: 'page:about', kind: 'page', href: '/about/', body: '我学习机器学习。', bodyEn: 'I explore machine learning.' },
+    ];
+    const load = createSearchLoader(vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(entries))));
+    const search = (await load()).search;
+    expect(search('Shiye').map(({ item: result }) => result.href)).toEqual(expect.arrayContaining(['/projects/shiye/', '/blog/%E6%8B%BE%E9%A1%B5%E6%96%87%E7%AB%A0']));
+    expect(search('OCR').some(({ item: result }) => result.kind === 'knowledge')).toBe(true);
+    expect(search('machine learning').some(({ item: result }) => result.href === '/about/')).toBe(true);
+  });
 });
 
 describe('search dialog', () => {
@@ -70,6 +94,7 @@ describe('search dialog', () => {
     dispose?.();
     vi.unstubAllGlobals();
     vi.useRealTimers();
+    delete document.documentElement.dataset.lang;
     document.body.replaceChildren();
   });
 
@@ -78,6 +103,15 @@ describe('search dialog', () => {
     input.value = query;
     input.dispatchEvent(new Event('input'));
   };
+
+  it('uses English feedback when the interface language is English', async () => {
+    document.documentElement.dataset.lang = 'en';
+    dispose = initSearch(root, async () => ({ search: () => [] }));
+    open();
+    expect(results).toHaveTextContent('Search articles, projects, notes, and knowledge');
+    type('missing');
+    await vi.waitFor(() => expect(results).toHaveTextContent('No matching content'));
+  });
 
   it('keeps the latest results when older requests finish last', async () => {
     const old = deferred<Searcher>();
@@ -145,6 +179,18 @@ describe('search dialog', () => {
     expect(dialog.open).toBe(false);
   });
 
+  it('shows content types and routes each result to its own section', async () => {
+    const article = item('拾页');
+    const project: SearchItem = { ...article, slug: 'project:shiye', kind: 'project', href: '/projects/shiye/', title: '拾页作品' };
+    const note: SearchItem = { ...article, slug: 'note:shiye', kind: 'note', href: '/notes/shiye/', title: '拾页笔记' };
+    dispose = initSearch(root, async () => ({ search: () => [article, project, note].map((entry) => ({ item: entry })) }));
+    open(); type('拾页');
+    await vi.waitFor(() => expect(results.querySelectorAll('a')).toHaveLength(3));
+    const links = [...results.querySelectorAll('a')];
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/blog/%E6%8B%BE%E9%A1%B5', '/projects/shiye/', '/notes/shiye/']);
+    expect(links.map((link) => link.querySelector('.search-result-type')?.textContent)).toEqual(['文章', '作品', '笔记']);
+  });
+
   it('closes on the first Escape without collapsing the exit frame and resets on reopen', async () => {
     dispose = initSearch(root, async () => searcher);
     open();
@@ -167,6 +213,17 @@ describe('search dialog', () => {
     await vi.waitFor(() => expect(results.querySelector('mark')).toHaveTextContent('大道至简'));
     expect(results.querySelector('[data-search-snippet]')).toHaveTextContent('<script>大道至简</script>');
     expect(results.querySelector('script')).toBeNull();
+  });
+
+  it('uses the English summary instead of a Chinese body snippet in English mode', async () => {
+    document.documentElement.dataset.lang = 'en';
+    const entry = { ...item('拾页'), titleEn: 'Shiye', body: '正文介绍 OCR。', descriptionEn: 'Organize a collection with OCR.' };
+    dispose = initSearch(root, async () => ({ search: () => [{ item: entry }] }));
+    open(); type('OCR');
+    await vi.waitFor(() => expect(results.querySelector('mark')).toHaveTextContent('OCR'));
+    expect(results).toHaveTextContent('Organize a collection with OCR.');
+    expect(results).not.toHaveTextContent('正文介绍');
+    expect(results.querySelector('p[lang="en"]')).not.toBeNull();
   });
 
   it('delays loading feedback and cancels it when the dialog closes', async () => {

@@ -1,44 +1,40 @@
 ---
-import { getImage } from 'astro:assets';
-import Blog from '../components/Blog';
+import { Image } from 'astro:assets';
 import PageLayout from '../layouts/PageLayout.astro';
-import { getRecentPostSummaries } from '../utils/posts';
+import OrbitAvatar from '../components/rumo/OrbitAvatar.astro';
+import ListRow from '../components/rumo/ListRow.astro';
+import CollectionRow from '../components/rumo/CollectionRow.astro';
+import { getAllPostSummaries } from '../utils/posts';
 import { getBlogPosts } from '../utils/content';
 import { siteConfig } from '../config/site';
-import avatarSrc from '../assets/avatar.png';
-
-const posts = await getBlogPosts();
-const recentPosts = getRecentPostSummaries(posts, 3);
-const avatarImage = await getImage({
-  src: avatarSrc,
-  width: 160,
-  height: 160,
-  densities: [1, 2],
-  format: 'webp',
-  layout: 'fixed',
-});
-const avatar = {
-  src: avatarImage.src,
-  srcSet: avatarImage.srcSet.attribute,
-  width: 160,
-  height: 160,
-};
-const websiteJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: siteConfig.name,
-  url: siteConfig.url,
-  description: siteConfig.description,
-  author: {
-    '@type': 'Person',
-    name: siteConfig.author,
-    url: siteConfig.url,
-  },
-};
+import { notes, projects } from '../data/showcase';
+const posts = getAllPostSummaries(await getBlogPosts());
+const latest = posts[0];
+const blog = posts.filter((post) => post.category !== '随想').slice(0, 3);
+const featured = projects.find((project) => project.id === 'shiye');
+const sparseNotes = notes.length < 2;
 ---
-
-<PageLayout title={siteConfig.title} description={siteConfig.description} activePath="/" mainSpacingClass="pt-28 pb-16 md:pt-32 md:pb-20">
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
-  <link slot="head" rel="preload" as="image" href={avatar.src} imagesrcset={avatar.srcSet} imagesizes="(min-width: 768px) 160px, 112px" type="image/webp" />
-  <Blog posts={recentPosts} avatar={avatar} />
+<PageLayout title={siteConfig.title} description={siteConfig.description} activePath="/">
+  <section class="home-hero">
+    <div class="home-hero-copy">
+      <p class="eyebrow"><span>■</span> <span data-zh="个人数字空间 / 正在建设" data-en="Personal space / in progress">个人数字空间 / 正在建设</span></p>
+      <h1>hi, i'm zhixian</h1>
+      <p class="hero-lead" data-zh="全栈开发者，探索 AI 应用与产品创造。" data-en="Full-stack developer exploring AI and product creation.">全栈开发者，探索 AI 应用与产品创造。</p>
+      <blockquote data-zh="持续思考人机协同的未来。" data-en="Thinking about the future of human–AI collaboration.">持续思考人机协同的未来。</blockquote>
+      <p class="hero-body" data-zh="我会在这里分享技术实践、产品思考，以及把想法变成作品的过程。" data-en="I share technical practice, product thinking, and the process of making ideas real.">我会在这里分享技术实践、产品思考，以及把想法变成作品的过程。</p>
+      <div class="hero-links"><a href="/about/" data-zh="再多认识我一点 →" data-en="A little more about me →">再多认识我一点 →</a><a href={siteConfig.contacts[0].href} target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+      {latest && <a class="home-latest" href={`/blog/${latest.slug}`}><span data-zh="最新文章" data-en="Latest article">最新文章</span><strong data-zh={latest.title} data-en={latest.titleEn || latest.title}>{latest.title}</strong><time datetime={latest.date}>{latest.date}</time><span aria-hidden="true">→</span></a>}
+    </div>
+    <OrbitAvatar />
+  </section>
+  <div class="status-strip"><span>▣ <span data-zh="项目记录" data-en="Project notes">项目记录</span></span><p><span data-zh="从收藏到整理，再到 AI 对话：" data-en="From collections to organization and AI conversations: ">从收藏到整理，再到 AI 对话：</span><a href="/projects/shiye/" data-zh="拾页 →" data-en="Shiye →">拾页 →</a><span data-zh="（本地素材工作台原型）" data-en=" (a local collection workspace prototype)">（本地素材工作台原型）</span></p></div>
+  <section class="home-writing" data-filter-root>
+    <div class="section-rule writing-rule"><h2 data-zh="文字" data-en="Writing">文字</h2><span class="section-dots"></span><div class="content-filter-control"><span class="content-filter-label" data-zh="内容语言" data-en="Content language">内容语言</span><div class="filter-pills" aria-label="内容语言" data-aria-zh="内容语言" data-aria-en="Content language"><button type="button" data-content-filter="all" aria-pressed="true" data-zh="全部" data-en="All">全部</button><button type="button" data-content-filter="en" aria-pressed="false">English <small>0</small></button><button type="button" data-content-filter="zh" aria-pressed="false">简体中文</button></div></div></div>
+    <div class:list={['home-columns', { 'home-columns--sparse': sparseNotes }]}>
+      <div><div class="column-heading"><h3 data-zh="博客" data-en="Blog">博客</h3><a href="/blog/" data-zh="浏览博客 →" data-en="Browse blog →">浏览博客 →</a></div><div class="home-post-list">{blog.map((post) => <ListRow post={post} hideNumber />)}</div></div>
+      <div><div class="column-heading"><h3 data-zh="笔记" data-en="Notes">笔记</h3><a href="/notes/" data-zh="浏览笔记 →" data-en="Browse notes →">浏览笔记 →</a></div><div class="home-note-list">{notes.slice(0, 2).map((note) => <CollectionRow href={`/notes/${note.id}/`} title={note.title} titleEn={note.titleEn} summary={note.summary} summaryEn={note.summaryEn} date={note.date} status="文章摘要" statusEn="Article summary" compact />)}</div></div>
+    </div><p class="filter-empty" data-filter-empty data-zh="暂时没有这个语言的内容。" data-en="No content in this language yet." hidden>暂时没有这个语言的内容。</p>
+  </section>
+  <section class="home-featured"><div class="section-rule"><h2 data-zh="精选作品" data-en="Selected work">精选作品</h2><span></span><a href="/projects/" data-zh="全部作品 →" data-en="All projects →">全部作品 →</a></div>{featured && <a class="featured-project" href={`/projects/${featured.id}/`}><div class="featured-copy"><span class="project-status" data-zh={featured.status} data-en={featured.statusEn}>{featured.status}</span><strong data-zh="拾页：把收藏夹从终点变成起点" data-en="Shiye: turning a collection into a starting point">拾页：把收藏夹从终点变成起点</strong><p data-zh="从链接采集到本地素材库，再到 AI 对话；记录一个产品从问题出发的过程。" data-en="From collecting links to a local library and AI conversations: building a product around a real problem.">从链接采集到本地素材库，再到 AI 对话；记录一个产品从问题出发的过程。</p><span class="text-link" data-zh="了解这个项目 →" data-en="Explore the project →">了解这个项目 →</span></div><div class="featured-image"><Image src={featured.image} width={480} alt={featured.imageAlt} format="webp" loading="lazy" /></div></a>}</section>
+  <section class="home-knowledge"><div class="section-rule"><h2 data-zh="知识库" data-en="Knowledge">知识库</h2><span></span></div><a class="knowledge-promo" href="/knowledge/"><span class="knowledge-starfield" aria-hidden="true">·　✦　·　·<br/>　·　·　✦　·<br/>✦　·　·　·</span><strong data-zh="让学过的东西，有处可寻。" data-en="Ideas, kept within reach.">让学过的东西，有处可寻。</strong><p data-zh="持续维护、彼此相连的学习记录。" data-en="Learning notes that grow and connect over time.">持续维护、彼此相连的学习记录。</p><span class="text-link" data-zh="浏览知识库 →" data-en="Browse knowledge →">浏览知识库 →</span></a></section>
 </PageLayout>

@@ -1,0 +1,8 @@
+---
+interface Props { href: string; title: string; titleEn?: string; summary: string; summaryEn?: string; date: string; index?: number; topic?: string; status?: string; statusEn?: string; compact?: boolean; }
+const { href, title, titleEn = title, summary, summaryEn = summary, date, index = 0, topic, status, statusEn = status, compact = false } = Astro.props;
+---
+<a class:list={['editorial-row', { 'editorial-row--compact': compact }]} href={href} data-content-language="zh">
+  {!compact && <span class="row-index">{String(index + 1).padStart(2, '0')}</span>}
+  <span class="row-content"><strong data-zh={title} data-en={titleEn}>{title}</strong><span class="row-excerpt" data-zh={summary} data-en={summaryEn} data-content-lang-zh="zh-CN" data-content-lang-en={summaryEn === summary ? 'zh-CN' : 'en'}>{summary}</span><span class="row-meta">{status && <span class="row-status" data-zh={status} data-en={statusEn}>{status}</span>}{topic && <span class="row-status">{topic}</span>}<time datetime={date}>{date}</time><span data-zh="中文" data-en="Chinese original">中文</span></span></span>
+</a>

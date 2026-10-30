@@ -1,0 +1,7 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../../components/rumo/SectionHead.astro';
+import CollectionRow from '../../components/rumo/CollectionRow.astro';
+import { knowledge } from '../../data/showcase';
+---
+<PageLayout title="知识库 - 方植贤" description="为回顾所学留一个地方。" activePath="/knowledge"><div class="page-heading-with-art"><SectionHead path="knowledge" title="知识库" subtitle="为回顾所学留一个地方。"/><div class="starfield" aria-hidden="true">·　　·　　✦　　·<br/>　·　✦　　·　　·<br/>✦　　·　　·　　✦</div></div><p class="collection-intro" data-zh="从技术实践中整理的简短条目，附有原文。" data-en="Concise notes from technical work, linked to the original articles.">从技术实践中整理的简短条目，附有原文。</p><div class="wide-list">{knowledge.map((entry, index) => <CollectionRow href={`/knowledge/${entry.id}/`} title={entry.title} titleEn={entry.titleEn} summary={entry.summary} summaryEn={entry.summaryEn} date={entry.date} topic={entry.topic} index={index} />)}</div></PageLayout>

@@ -1,0 +1,7 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { notes } from '../../data/showcase';
+export function getStaticPaths() { return notes.map((note) => ({ params: { note: note.id }, props: { note } })); }
+const { note } = Astro.props;
+---
+<PageLayout title={`${note.title} - 方植贤`} titleEn={`${note.titleEn} - Zhixian`} description={note.summary} activePath="/notes"><article class="collection-detail"><a class="article-back" href="/notes/" data-zh="← 笔记" data-en="← Notes">← 笔记</a><p class="path-label"><span aria-hidden="true">■</span> ~/zhixian-space/notes/{note.id}</p><h1 data-zh={note.title} data-en={note.titleEn}>{note.title}</h1><p class="collection-summary" data-zh={note.summary} data-en={note.summaryEn}>{note.summary}</p><div class="collection-meta"><span class="row-status" data-zh="文章摘要" data-en="Article summary">文章摘要</span><time datetime={note.date}>{note.date}</time><span data-zh="中文" data-en="Chinese original">中文</span></div><p class="note-origin"><span data-zh="整理自已有文章。" data-en="Adapted from an existing article.">整理自已有文章。</span> <a href={`/blog/${note.sourceSlug}`} data-zh="查看原文 →" data-en="Read the original →">查看原文 →</a></p><div class="collection-prose"><p class="language-note" lang="en">The original note below is in Chinese.</p>{note.paragraphs.map((paragraph) => <p lang="zh-CN">{paragraph}</p>)}</div></article></PageLayout>

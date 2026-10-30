@@ -1,21 +1,21 @@
 ---
 import '../styles/global.css';
+import '../styles/rumo.css';
 import SEO from '../components/SEO.astro';
 import { siteConfig } from '../config/site';
 import SpeedInsights from '@vercel/speed-insights/astro';
 
 interface Props {
   title: string;
+  titleEn?: string;
   description: string;
   type?: 'website' | 'article';
   image?: string;
   publishedTime?: Date;
   modifiedTime?: Date;
 }
-
-const { title, description, type, image, publishedTime, modifiedTime } = Astro.props;
+const { title, titleEn = title, description, type, image, publishedTime, modifiedTime } = Astro.props;
 ---
-
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -23,34 +23,27 @@ const { title, description, type, image, publishedTime, modifiedTime } = Astro.p
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={siteConfig.name} />
-    <title>{title}</title>
-    <SEO
-      title={title}
-      description={description}
-      type={type}
-      image={image}
-      publishedTime={publishedTime}
-      modifiedTime={modifiedTime}
-    />
+    <title data-zh={title} data-en={titleEn}>{title}</title>
+    <SEO title={title} description={description} type={type} image={image} publishedTime={publishedTime} modifiedTime={modifiedTime} />
     <script is:inline>
-      (function () {
+      (() => {
         try {
-          var stored = localStorage.getItem('theme');
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (stored === 'dark' || (!stored && prefersDark)) {
-            document.documentElement.classList.add('dark');
-          }
-        } catch (e) {}
+          const theme = localStorage.getItem('rumo-preview-theme') || 'auto';
+          const dark = theme === 'dark' || (theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.toggle('dark', dark);
+          document.documentElement.dataset.themeMode = theme;
+          document.documentElement.dataset.lang = localStorage.getItem('rumo-preview-lang') || 'zh';
+          if (window.location.pathname === '/' && sessionStorage.getItem('rumo-preview-entered') !== 'yes') document.documentElement.classList.add('terminal-active');
+        } catch { if (window.location.pathname === '/') document.documentElement.classList.add('terminal-active'); }
       })();
     </script>
     <script>
       import { initDisclosureMotion } from '../scripts/disclosure-motion';
+      import { initRumoPreview } from '../scripts/rumo-preview';
       initDisclosureMotion();
+      initRumoPreview();
     </script>
     <slot name="head" />
   </head>
-  <body>
-    <SpeedInsights />
-    <slot />
-  </body>
+  <body><SpeedInsights /><slot /></body>
 </html>

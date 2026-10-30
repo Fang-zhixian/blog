@@ -31,6 +31,7 @@ export function initArticleImages(
   let sourceWidth = 0;
   let sourceHeight = 0;
   let fallbackSource = '';
+  const uiText = (zh: string, en: string) => document.documentElement.dataset.lang === 'en' ? en : zh;
 
   const sizeImage = () => {
     if (!dialog.open || !sourceWidth || !sourceHeight) return;
@@ -50,8 +51,8 @@ export function initArticleImages(
     zoomed = value;
     dialog.dataset.zoomed = String(value);
     zoomButton.setAttribute('aria-pressed', String(value));
-    zoomButton.textContent = value ? '缩小' : '放大';
-    status.textContent = value ? '滑动图片查看细节' : '点按放大查看细节';
+    zoomButton.textContent = value ? uiText('缩小', 'Zoom out') : uiText('放大', 'Zoom in');
+    status.textContent = value ? uiText('滑动图片查看细节', 'Scroll to explore the image') : uiText('点按放大查看细节', 'Zoom in to see details');
     sizeImage();
     stage.scrollTop = 0;
     stage.scrollLeft = 0;
@@ -75,7 +76,9 @@ export function initArticleImages(
     const wrapper = document.createElement('button');
     wrapper.type = 'button';
     wrapper.className = 'article-image-trigger';
-    wrapper.setAttribute('aria-label', thumbnail.alt ? `放大图片：${thumbnail.alt}` : '放大文章图片');
+    const updateLabel = () => wrapper.setAttribute('aria-label', thumbnail.alt ? uiText(`放大图片：${thumbnail.alt}`, `Enlarge image: ${thumbnail.alt}`) : uiText('放大文章图片', 'Enlarge article image'));
+    updateLabel();
+    document.addEventListener('preview:language-changed', updateLabel, { signal });
     wrapper.setAttribute('aria-haspopup', 'dialog');
     wrapper.setAttribute('aria-expanded', 'false');
     thumbnail.before(wrapper);
@@ -111,7 +114,7 @@ export function initArticleImages(
   }, { signal });
   fullImage.addEventListener('error', () => {
     if (fallbackSource && fullImage.src !== fallbackSource) fullImage.src = fallbackSource;
-    else status.textContent = '图片暂时无法加载，请关闭后重试';
+    else status.textContent = uiText('图片暂时无法加载，请关闭后重试', 'Image unavailable. Close and try again.');
   }, { signal });
   zoomButton.addEventListener('click', () => setZoom(!zoomed), { signal });
   closeButton.addEventListener('click', () => close(), { signal });
@@ -122,6 +125,7 @@ export function initArticleImages(
   }, { signal });
   document.addEventListener('site:search-open', () => close(false, true), { signal });
   document.addEventListener('site:toc-open', () => close(false, true), { signal });
+  document.addEventListener('preview:language-changed', () => setZoom(zoomed), { signal });
   window.addEventListener('pagehide', () => close(false, true), { signal });
   window.addEventListener('resize', syncViewport, { signal });
   window.visualViewport?.addEventListener('resize', syncViewport, { signal });

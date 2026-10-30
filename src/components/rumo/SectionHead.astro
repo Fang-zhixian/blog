@@ -1,0 +1,13 @@
+---
+interface Props { path: string; title: string; subtitle?: string; }
+const { path, title, subtitle } = Astro.props;
+const english: Record<string, { title: string; subtitle?: string }> = {
+  projects: { title: 'Projects', subtitle: 'Things I am making and where they are now.' },
+  notes: { title: 'Notes', subtitle: 'Small observations along the way.' },
+  knowledge: { title: 'Knowledge', subtitle: 'A place to revisit what I have learned.' },
+  links: { title: 'Links', subtitle: 'Friends and sites worth visiting.' },
+  about: { title: 'About' },
+};
+const translation = english[path];
+---
+<header class="page-heading"><p class="path-label"><span aria-hidden="true">■</span> ~/zhixian-space/{path}</p><h1 data-zh={title} data-en={translation?.title ?? title}>{title}</h1>{subtitle && <p class="page-subtitle" data-zh={subtitle} data-en={translation?.subtitle ?? subtitle}>{subtitle}</p>}</header>

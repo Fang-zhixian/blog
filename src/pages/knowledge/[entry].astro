@@ -1,0 +1,7 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { knowledge } from '../../data/showcase';
+export function getStaticPaths() { return knowledge.map((entry) => ({ params: { entry: entry.id }, props: { entry } })); }
+const { entry } = Astro.props;
+---
+<PageLayout title={`${entry.title} - 方植贤`} titleEn={`${entry.titleEn} - Zhixian`} description={entry.summary} activePath="/knowledge"><article class="collection-detail"><a class="article-back" href="/knowledge/" data-zh="← 知识库" data-en="← Knowledge">← 知识库</a><p class="path-label"><span aria-hidden="true">■</span> ~/zhixian-space/knowledge/{entry.id}</p><h1 data-zh={entry.title} data-en={entry.titleEn}>{entry.title}</h1><p class="collection-summary" data-zh={entry.summary} data-en={entry.summaryEn}>{entry.summary}</p><div class="collection-meta"><span class="row-status">{entry.topic}</span><time datetime={entry.date}>{entry.date}</time><span data-zh="中文" data-en="Chinese original">中文</span></div><div class="collection-prose"><p class="language-note" lang="en">The original entry below is in Chinese.</p>{entry.paragraphs.map((paragraph) => <p lang="zh-CN">{paragraph}</p>)}<h2 data-zh="要点" data-en="Key points">要点</h2><ul lang="zh-CN">{entry.points.map((point) => <li>{point}</li>)}</ul></div><div class="collection-links"><a href={`/blog/${entry.sourceSlug}`} data-zh="阅读原文 →" data-en="Read the source article (Chinese) →">阅读原文 →</a></div></article></PageLayout>

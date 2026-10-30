@@ -1,0 +1,7 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../../components/rumo/SectionHead.astro';
+import CollectionRow from '../../components/rumo/CollectionRow.astro';
+import { notes } from '../../data/showcase';
+---
+<PageLayout title="笔记 - 方植贤" description="沿途的小观察。" activePath="/notes"><SectionHead path="notes" title="笔记" subtitle="沿途的小观察。"/><div class="list-with-sidebar" data-filter-root><aside class="filter-sidebar"><p data-zh="内容语言" data-en="Content language">内容语言</p><button type="button" data-content-filter="all" aria-pressed="true"><span data-zh="全部" data-en="All">全部</span><span>{notes.length}</span></button><button type="button" data-content-filter="en" aria-pressed="false">English <span>0</span></button><button type="button" data-content-filter="zh" aria-pressed="false">简体中文 <span>{notes.length}</span></button></aside><div class="wide-list">{notes.map((note, index) => <CollectionRow href={`/notes/${note.id}/`} title={note.title} titleEn={note.titleEn} summary={note.summary} summaryEn={note.summaryEn} date={note.date} status="文章摘要" statusEn="Article summary" index={index} />)}<p class="filter-empty" data-filter-empty data-zh="暂时没有这个语言的内容。" data-en="No content in this language yet." hidden>暂时没有这个语言的内容。</p></div></div></PageLayout>

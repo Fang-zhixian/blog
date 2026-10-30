@@ -1,54 +1,31 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import Navbar from '../components/layout/Navbar.astro';
-import Footer from '../components/layout/Footer';
-import { footerLinks, siteConfig } from '../config/site';
+import Header from '../components/rumo/Header.astro';
+import Terminal from '../components/rumo/Terminal.astro';
+import Footer from '../components/rumo/Footer.astro';
 
 interface Props {
-  title: string;
-  description: string;
-  type?: 'website' | 'article';
-  image?: string;
-  publishedTime?: Date;
-  modifiedTime?: Date;
-  maxWidthClass?: string;
-  activePath?: string;
-  mainSpacingClass?: string;
+  title: string; titleEn?: string; description: string; type?: 'website' | 'article'; image?: string;
+  publishedTime?: Date; modifiedTime?: Date; maxWidthClass?: string;
+  activePath?: string; mainSpacingClass?: string;
 }
-
-const {
-  title,
-  description,
-  type,
-  image,
-  publishedTime,
-  modifiedTime,
-  maxWidthClass = 'max-w-5xl',
-  activePath,
-  mainSpacingClass = 'pt-32 pb-20',
-} = Astro.props;
+const { title, titleEn: explicitTitleEn, description, type, image, publishedTime, modifiedTime, activePath = '/' } = Astro.props;
+const englishTitles: Record<string, string> = { '/': 'Zhixian', '/projects': 'Projects - Zhixian', '/blog': 'Blog - Zhixian', '/notes': 'Notes - Zhixian', '/knowledge': 'Knowledge - Zhixian', '/links': 'Links - Zhixian', '/about': 'About - Zhixian', '/privacy': 'Privacy - Zhixian' };
+const cleanPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const titleEn = explicitTitleEn ?? englishTitles[cleanPath] ?? title.replace(/^页面不存在/, 'Page not found').replace(/^技术实践/, 'Technical practice').replace(/^产品分析/, 'Product analysis').replace(/^随想/, 'Reflections').replace(/· 第 (\d+) 页/, '· Page $1').replace(/方植贤$/, 'Zhixian');
 ---
-
-<BaseLayout
-  title={title}
-  description={description}
-  type={type}
-  image={image}
-  publishedTime={publishedTime}
-  modifiedTime={modifiedTime}
->
+<BaseLayout title={title} titleEn={titleEn} description={description} type={type} image={image} publishedTime={publishedTime} modifiedTime={modifiedTime}>
   <slot name="head" slot="head" />
-  <div class="site-shell min-h-screen bg-[#fafafa] dark:bg-[#0f0f0f] text-[#1a1a1a] dark:text-[#fafafa] font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-3 focus:py-2 focus:bg-black focus:text-white dark:focus:bg-white dark:focus:text-black"
-    >
-      跳到正文
-    </a>
-    <Navbar maxWidthClass={maxWidthClass} activePath={activePath} />
-    <main id="main-content" tabindex="-1" class={`${maxWidthClass} mx-auto px-6 ${mainSpacingClass}`}>
-      <slot />
-    </main>
-    <Footer maxWidthClass={maxWidthClass} links={[...footerLinks]} authorName={siteConfig.author} />
+  <Terminal />
+  <div class="rumo-shell">
+    <a href="#main-content" class="skip-link" data-zh="跳到正文" data-en="Skip to content">跳到正文</a>
+    <Header activePath={activePath} />
+    <main id="main-content" class:list={['rumo-main', { 'rumo-main--article': type === 'article' }]} tabindex="-1"><slot /></main>
+    <Footer />
+    <div class="floating-actions">
+      {type === 'article' ? <button type="button" class="floating-like" data-like-article aria-pressed="false"><span aria-hidden="true">♡</span><span data-like-label>有帮助</span><span class="like-count" data-like-count>…</span></button> : <button type="button" class="floating-like" data-like-site aria-pressed="false"><span aria-hidden="true">♡</span><span data-like-label>喜欢这个小站</span><span class="like-count" data-like-count>…</span></button>}
+      <span class="metrics-feedback" data-metrics-status role="status" hidden></span>
+      <button type="button" class="floating-top" data-back-top hidden><span class="top-arrow" aria-hidden="true">↑</span><span data-zh="回到顶部" data-en="Back to top">回到顶部</span><span data-scroll-progress>0%</span></button>
+    </div>
   </div>
 </BaseLayout>

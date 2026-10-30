@@ -27,7 +27,19 @@ describe('article image viewer', () => {
   afterEach(() => {
     dispose?.();
     vi.restoreAllMocks();
+    delete document.documentElement.dataset.lang;
     document.body.replaceChildren();
+  });
+
+  it('updates image controls when the interface switches to English', () => {
+    dispose = initArticleImages();
+    document.documentElement.dataset.lang = 'en';
+    document.dispatchEvent(new Event('preview:language-changed'));
+    expect(trigger()).toHaveAttribute('aria-label', 'Enlarge image: 桌面软件截图');
+    trigger().click();
+    expect(zoom()).toHaveTextContent('Zoom in');
+    zoom().click();
+    expect(zoom()).toHaveTextContent('Zoom out');
   });
 
   it('enhances unlinked images without changing their responsive attributes or article text', () => {

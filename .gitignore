@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 # vscode setting folder
 .vscode/
+
+# local preview data and build caches
+.local-data/
+.vite-preview*/

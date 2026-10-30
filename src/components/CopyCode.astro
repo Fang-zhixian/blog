@@ -19,15 +19,20 @@
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'absolute top-3 right-3 px-2 py-1 text-xs rounded bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-black/10 dark:hover:bg-white/20';
-      button.textContent = '复制';
-      button.setAttribute('aria-label', '复制代码');
+      button.dataset.zh = '复制'; button.dataset.en = 'Copy';
+      button.dataset.ariaZh = '复制代码'; button.dataset.ariaEn = 'Copy code';
+      const syncText = () => {
+        const en = document.documentElement.dataset.lang === 'en';
+        button.textContent = en ? 'Copy' : '复制';
+        button.setAttribute('aria-label', en ? 'Copy code' : '复制代码');
+      };
+      syncText();
+      document.addEventListener('preview:language-changed', syncText);
 
       button.addEventListener('click', async () => {
         await navigator.clipboard.writeText(pre.textContent ?? '');
-        button.textContent = '已复制';
-        window.setTimeout(() => {
-          button.textContent = '复制';
-        }, 1500);
+        button.textContent = document.documentElement.dataset.lang === 'en' ? 'Copied' : '已复制';
+        window.setTimeout(syncText, 1500);
       });
 
       wrapper.appendChild(button);

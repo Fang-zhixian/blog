@@ -3,7 +3,7 @@
     type="button"
     data-search-open
     class="min-h-11 min-w-11 inline-flex items-center justify-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-    aria-label="打开搜索"
+    aria-label="打开搜索" data-aria-zh="打开搜索" data-aria-en="Open search"
   >
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 dark:text-gray-300" aria-hidden="true">
       <circle cx="11" cy="11" r="8"></circle>
@@ -13,7 +13,7 @@
 
   <dialog
     data-search-dialog
-    aria-label="搜索文章"
+    aria-label="全站搜索" data-aria-zh="全站搜索" data-aria-en="Search the site"
     class="fixed z-50 w-[min(42rem,calc(100%-2rem))] rounded-xl bg-white dark:bg-gray-900 p-0 shadow-none border-0 backdrop:bg-black/50"
   >
     <div class="flex shrink-0 items-center px-4 border-b border-gray-200 dark:border-gray-700">
@@ -25,11 +25,11 @@
         data-search-input
         type="search"
         enterkeyhint="search"
-        aria-label="搜索文章"
-        placeholder="搜索文章..."
+        aria-label="全站搜索" data-aria-zh="全站搜索" data-aria-en="Search the site"
+        placeholder="搜索全站..." data-placeholder-zh="搜索全站..." data-placeholder-en="Search the site..."
         class="min-w-0 flex-1 px-4 py-4 text-base bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
       />
-      <button type="button" data-search-close aria-label="关闭搜索" class="min-h-11 min-w-11 inline-flex items-center justify-center">
+      <button type="button" data-search-close aria-label="关闭搜索" data-aria-zh="关闭搜索" data-aria-en="Close search" class="min-h-11 min-w-11 inline-flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 hover:text-gray-600" aria-hidden="true">
           <path d="M18 6 6 18"></path>
           <path d="m6 6 12 12"></path>
@@ -38,9 +38,9 @@
     </div>
     <div data-search-results aria-live="polite" aria-busy="false" class="min-h-0 max-h-96 overflow-y-auto overscroll-contain"></div>
     <div class="shrink-0 px-4 py-2 bg-gray-50 dark:bg-gray-800 text-xs text-gray-600 dark:text-gray-300 flex justify-between">
-      <span class="md:hidden">点按结果阅读文章</span>
-      <span class="hidden md:inline">按 ESC 关闭</span>
-      <span class="hidden md:inline">⌘K 打开搜索</span>
+      <span class="md:hidden" data-zh="点按结果查看内容" data-en="Tap a result to open">点按结果查看内容</span>
+      <span class="hidden md:inline" data-zh="按 ESC 关闭" data-en="Press Esc to close">按 ESC 关闭</span>
+      <span class="hidden md:inline" data-zh="⌘K 打开搜索" data-en="⌘K to search">⌘K 打开搜索</span>
     </div>
   </dialog>
 </div>

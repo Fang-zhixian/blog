@@ -1,10 +1,15 @@
 export interface SearchItem {
   slug: string;
+  kind: 'article' | 'project' | 'note' | 'knowledge' | 'page';
+  href: string;
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
   tags: string[];
-  date: string;
+  date?: string;
   body?: string;
+  bodyEn?: string;
 }
 
 export interface Searcher {
@@ -26,24 +31,40 @@ export function createSearchLoader(fetchIndex: typeof fetch = fetch) {
   let pending: Promise<Searcher> | undefined;
 
   return function loadIndex(): Promise<Searcher> {
-    pending ??= Promise.all([import('fuse.js'), fetchIndex('/search.json')])
+    // The versioned URL avoids reusing an older, article-only index from the browser cache.
+    pending ??= Promise.all([import('fuse.js'), fetchIndex('/search.json?v=site-2')])
       .then(async ([{ default: Fuse }, response]) => {
         if (!response.ok) {
           throw new Error(`Search index request failed (${response.status})`);
         }
         const items: SearchItem[] = await response.json();
-        return new Fuse(items, {
+        const index = new Fuse(items, {
           keys: [
             { name: 'title', weight: 2 },
+            { name: 'titleEn', weight: 2 },
             { name: 'description', weight: 1 },
+            { name: 'descriptionEn', weight: 1 },
             { name: 'tags', weight: 1 },
             { name: 'body', weight: 0.4 },
+            { name: 'bodyEn', weight: 0.4 },
           ],
           threshold: 0.35,
           ignoreLocation: true,
           includeScore: true,
           includeMatches: true,
         });
+        return {
+          search(query: string) {
+            const results = index.search(query);
+            const term = query.trim();
+            // Short technical abbreviations are easily confused with unrelated words by fuzzy search.
+            if (!/^[a-z0-9][a-z0-9+#.\-]{1,5}$/i.test(term)) return results;
+            const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const exactWord = new RegExp(`(^|[^a-z0-9])${escaped}(?=$|[^a-z0-9])`, 'i');
+            const exact = results.filter(({ item }) => [item.title, item.titleEn || '', item.description, item.descriptionEn || '', ...item.tags, item.body || '', item.bodyEn || ''].some((field) => exactWord.test(field)));
+            return exact.length ? exact : results;
+          },
+        };
       })
       .catch((error) => {
         pending = undefined;
@@ -57,6 +78,7 @@ export function initSearch(
   root = document.querySelector<HTMLElement>('[data-search-root]'),
   loadIndex: () => Promise<Searcher> = createSearchLoader(),
 ) {
+  const uiText = (zh: string, en: string) => document.documentElement.dataset.lang === 'en' ? en : zh;
   const openButton = root?.querySelector<HTMLButtonElement>('[data-search-open]');
   const closeButton = root?.querySelector<HTMLButtonElement>('[data-search-close]');
   const dialog = root?.querySelector<HTMLDialogElement>('[data-search-dialog]');
@@ -104,27 +126,40 @@ export function initSearch(
     visibleResults = items;
     results.replaceChildren();
     if (!query) {
-      showStatus('输入关键词，搜索标题和正文');
+      showStatus(uiText('输入关键词，搜索文章、作品、笔记和知识', 'Search articles, projects, notes, and knowledge.'));
       return;
     }
     if (items.length === 0) {
-      showStatus('未找到相关文章');
+      showStatus(uiText('没有找到相关内容，试试其他关键词。', 'No matching content. Try another keyword.'));
       return;
     }
 
     items.forEach((item, index) => {
       const link = document.createElement('a');
-      link.href = `/blog/${encodeURIComponent(item.slug)}`;
+      link.href = item.href;
       link.dataset.searchItem = String(index);
       link.className = `block px-4 py-4 border-b border-gray-100 dark:border-gray-800 last:border-0 ${
         index === selectedIndex ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-100 dark:hover:bg-gray-800'
       }`;
       const title = document.createElement('h3');
       title.className = 'font-medium text-gray-900 dark:text-gray-100';
-      title.textContent = item.title;
+      title.textContent = uiText(item.title, item.titleEn || item.title);
+      title.lang = document.documentElement.dataset.lang === 'en' && item.titleEn ? 'en' : 'zh-CN';
+      const kind = document.createElement('span');
+      kind.className = 'search-result-type';
+      const names: Record<SearchItem['kind'], [string, string]> = {
+        article: ['文章', 'Article'], project: ['作品', 'Project'], note: ['笔记', 'Note'],
+        knowledge: ['知识', 'Knowledge'], page: ['页面', 'Page'],
+      };
+      kind.textContent = uiText(...names[item.kind]);
+      const heading = document.createElement('div');
+      heading.className = 'search-result-heading';
+      heading.append(title, kind);
       const description = document.createElement('p');
       description.className = 'text-sm text-gray-600 dark:text-gray-300 mt-1 leading-relaxed line-clamp-3';
-      const snippet = snippets.get(item.slug);
+      const englishSummary = document.documentElement.dataset.lang === 'en' && item.descriptionEn;
+      const snippet = englishSummary ? (getSearchSnippet(item.descriptionEn, query) || getSearchSnippet(item.bodyEn, query)) : snippets.get(item.slug);
+      description.lang = englishSummary ? 'en' : 'zh-CN';
       if (snippet) {
         description.dataset.searchSnippet = 'true';
         const mark = document.createElement('mark');
@@ -132,9 +167,9 @@ export function initSearch(
         mark.textContent = snippet.text.slice(snippet.start, snippet.end);
         description.append(snippet.text.slice(0, snippet.start), mark, snippet.text.slice(snippet.end));
       } else {
-        description.textContent = item.description;
+        description.textContent = uiText(item.description, item.descriptionEn || item.description);
       }
-      link.append(title, description);
+      link.append(heading, description);
       results.append(link);
     });
   };
@@ -158,7 +193,7 @@ export function initSearch(
     results.setAttribute('aria-busy', 'true');
     if (!query) renderResults('', []);
     loadingTimer = window.setTimeout(() => {
-      if (currentRequest === requestId && dialog.open) showStatus('正在加载搜索…');
+      if (currentRequest === requestId && dialog.open) showStatus(uiText('正在加载搜索…', 'Loading search…'));
     }, 120);
     try {
       const searcher = await loadIndex();
@@ -170,7 +205,7 @@ export function initSearch(
       renderResults(query, items);
     } catch {
       if (currentRequest === requestId && dialog.open) {
-        showStatus('搜索暂时不可用，请重新输入或稍后重试');
+        showStatus(uiText('搜索暂时不可用，请重新输入或稍后重试', 'Search is unavailable. Please try again.'));
       }
     } finally {
       if (currentRequest === requestId) {

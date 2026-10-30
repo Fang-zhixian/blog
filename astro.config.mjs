@@ -7,6 +7,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { markdownConfig } from './src/config/markdown.mjs';
+import { localMetricsPlugin } from './scripts/local-metrics.mjs';
 
 function readBlogDates() {
   const dir = path.join(process.cwd(), 'src/content/blog');
@@ -43,6 +44,7 @@ const blogDates = readBlogDates();
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.greedywolf.tech',
+  devToolbar: { enabled: false },
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [
     react(),
@@ -59,7 +61,12 @@ export default defineConfig({
   ],
 
   vite: {
-    plugins: [tailwindcss()]
+    // Checks and builds must not replace dependency bundles used by the running preview.
+    cacheDir: path.join(process.cwd(), process.argv.includes('dev') ? '.vite-preview-dev' : '.vite-preview-build'),
+    server: {
+      fs: { allow: [process.cwd(), fs.realpathSync(path.resolve(process.cwd(), 'node_modules'))], deny: ['.env', '.env.*', '*.{crt,pem}', '**/.git/**', '**/.local-data/**'] },
+    },
+    plugins: [tailwindcss(), localMetricsPlugin({ dataDir: path.join(process.cwd(), '.local-data'), getArticleSlugs: () => Object.keys(readBlogDates()) })]
   },
 
   image: {

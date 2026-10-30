@@ -1,0 +1,22 @@
+---
+import { Image } from 'astro:assets';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { projects } from '../../data/showcase';
+export function getStaticPaths() { return projects.map((project) => ({ params: { project: project.id }, props: { project } })); }
+const { project } = Astro.props;
+const iconArt = 'iconArt' in project ? project.iconArt : null;
+---
+<PageLayout title={`${project.title} - 方植贤`} titleEn={`${project.titleEn} - Zhixian`} description={project.summary} activePath="/projects">
+  <article class="collection-detail">
+    <a class="article-back" href="/projects/" data-zh="← 作品" data-en="← Projects">← 作品</a>
+    <p class="path-label"><span aria-hidden="true">■</span> ~/zhixian-space/projects/{project.id}</p>
+    <h1 data-zh={project.title} data-en={project.titleEn}>{project.title}</h1><p class="collection-subtitle" data-zh={project.subtitle} data-en={project.subtitleEn}>{project.subtitle}</p>
+    <p class="collection-summary" data-zh={project.summary} data-en={project.summaryEn}>{project.summary}</p><div class="collection-meta"><span class="row-status" data-zh={project.status} data-en={project.statusEn}>{project.status}</span><time datetime={project.date}>{project.date}</time><span data-zh="中文" data-en="Details in Chinese">中文</span></div>
+    <figure class:list={['project-image', { 'project-image--icon': iconArt }]}>
+      {iconArt ? <div class="project-icon-stage"><Image src={project.image} width={256} alt={project.imageAlt} data-alt-zh={project.imageAlt} data-alt-en={project.imageAltEn} format="webp" /><div class="project-icon-copy"><span>{iconArt.eyebrow}</span><strong>{project.title}</strong><p data-zh={iconArt.tagline} data-en={iconArt.taglineEn}>{iconArt.tagline}</p><small>{iconArt.footer}</small></div></div> : <Image src={project.image} width={1000} alt={project.imageAlt} data-alt-zh={project.imageAlt} data-alt-en={project.imageAltEn} format="webp" />}
+      <figcaption data-zh={project.imageAlt} data-en={project.imageAltEn}>{project.imageAlt}</figcaption>
+    </figure>
+    <div class="collection-prose"><p class="language-note" lang="en">The project details below are in Chinese.</p><h2 data-zh="想解决什么" data-en="The problem">想解决什么</h2><p lang="zh-CN">{project.problem}</p><h2 data-zh="做了什么" data-en="What it does">做了什么</h2><ul lang="zh-CN">{project.capabilities.map((point) => <li>{point}</li>)}</ul>{'detailSections' in project && project.detailSections.map((section) => <section><h2 data-zh={section.title} data-en={section.titleEn}>{section.title}</h2>{section.paragraphs.map((paragraph) => <p lang="zh-CN">{paragraph}</p>)}</section>)}<h2 data-zh="记录时的边界" data-en="Limits at the time">记录时的边界</h2><p lang="zh-CN">{project.limitations}</p></div>
+    <div class="collection-links">{project.articleSlug && <a href={`/blog/${project.articleSlug}`} data-zh="阅读完整开发过程 →" data-en="Read the full story (Chinese) →">阅读完整开发过程 →</a>}<a href={project.repository} target="_blank" rel="noopener noreferrer" data-zh={`${project.repositoryLabel} ↗`} data-en={`${project.repositoryLabelEn} ↗`}>{project.repositoryLabel} ↗</a></div>
+  </article>
+</PageLayout>

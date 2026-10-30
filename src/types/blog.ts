@@ -8,6 +8,8 @@ export interface PostSummary {
   slug: string;
   title: string;
   excerpt: string;
+  titleEn?: string;
+  excerptEn?: string;
   date: string;
   tag: string;
   tags: string[];

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BlogEntry, PostSummary } from '../types/blog';
 import {
+  descriptionRepeatsFirstParagraph,
   estimateReadingMinutes,
   filterPublishedPosts,
   getAdjacentPostSummaries,
@@ -46,6 +47,11 @@ function makePost(
 }
 
 describe('post utilities', () => {
+  it('recognizes an exact repeated introduction without hiding different summaries', () => {
+    expect(descriptionRepeatsFirstParagraph('第一段 内容。', '\n第一段\n内容。\n\n第二段。')).toBe(true);
+    expect(descriptionRepeatsFirstParagraph('第一段内容。', '第一段内容。还有一句。\n\n第二段。')).toBe(false);
+    expect(descriptionRepeatsFirstParagraph('', '')).toBe(false);
+  });
   it('counts categories independently of tags and keeps category pagination scoped', () => {
     const posts = getAllPostSummaries([
       makePost('a', 'A', '2026-01-01', ['AI']),
@@ -150,6 +156,13 @@ describe('post utilities', () => {
     ];
 
     expect(getRelatedPostSummaries(posts, current)).toEqual([]);
+  });
+
+  it('excludes adjacent articles before selecting related recommendations', () => {
+    const current = makePost('current', 'Current', '2024-04-01', ['AI']);
+    const adjacent = makePost('adjacent', 'Adjacent', '2024-03-01', ['AI']);
+    const other = makePost('other', 'Other', '2024-02-01', ['AI']);
+    expect(getRelatedPostSummaries([current, adjacent, other], current, 1, ['adjacent']).map((post) => post.slug)).toEqual(['other']);
   });
 
   it('returns newer and older neighbors in date order', () => {

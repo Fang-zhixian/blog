@@ -13,8 +13,8 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
 
 {tocHeadings.length > 0 && (
   <>
-    <nav data-toc aria-label="文章目录" class="hidden xl:block sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto">
-      <p class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">目录</p>
+    <nav data-toc aria-label="文章目录" data-aria-zh="文章目录" data-aria-en="Article contents" class="hidden xl:block sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4" data-zh="目录" data-en="Contents">目录</p>
       <ol class="border-l border-gray-200 dark:border-gray-800">
         {tocHeadings.map((heading) => (
           <li>
@@ -33,34 +33,16 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
       </ol>
     </nav>
 
-    <button
-      type="button"
-      data-toc-open
-      class="xl:hidden fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full bg-black text-white dark:bg-white dark:text-black text-sm font-medium"
-      aria-controls="mobile-toc"
-      aria-haspopup="dialog"
-      aria-expanded="false"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="8" x2="21" y1="6" y2="6"></line>
-        <line x1="8" x2="21" y1="12" y2="12"></line>
-        <line x1="8" x2="21" y1="18" y2="18"></line>
-        <line x1="3" x2="3.01" y1="6" y2="6"></line>
-        <line x1="3" x2="3.01" y1="12" y2="12"></line>
-        <line x1="3" x2="3.01" y1="18" y2="18"></line>
-      </svg>
-      目录
-    </button>
-
     <dialog
       id="mobile-toc"
       data-toc-dialog
-      aria-label="文章目录"
+      aria-label="文章目录" data-aria-zh="文章目录" data-aria-en="Article contents"
       class="xl:hidden w-full max-w-none max-h-[min(80dvh,40rem)] m-0 mt-auto flex-col overflow-hidden rounded-t-3xl bg-[#fafafa] dark:bg-[#0f0f0f] text-[#1a1a1a] dark:text-[#fafafa] p-0 backdrop:bg-black/50"
     >
       <div class="flex shrink-0 items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-800">
-        <p class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">目录</p>
-        <button type="button" data-toc-close aria-label="关闭目录" autofocus class="flex min-h-11 min-w-11 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400" data-zh="目录" data-en="Contents">目录</p>
+        <button type="button" data-toc-top class="toc-to-top" data-zh="↑ 回到顶部" data-en="↑ Back to top">↑ 回到顶部</button>
+        <button type="button" data-toc-close aria-label="关闭目录" data-aria-zh="关闭目录" data-aria-en="Close contents" autofocus class="flex min-h-11 min-w-11 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M18 6 6 18"></path>
             <path d="m6 6 12 12"></path>

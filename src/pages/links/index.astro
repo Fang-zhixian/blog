@@ -1,0 +1,9 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../../components/rumo/SectionHead.astro';
+import { siteConfig } from '../../config/site';
+---
+<PageLayout title="友链 - 方植贤" description="朋友们的站点，值得一逛。" activePath="/links">
+  <SectionHead path="links" title="友链" subtitle="朋友们的站点，值得一逛。"/>
+  <div class="links-content"><p data-zh="还没有添加友链。" data-en="No links added yet.">还没有添加友链。</p><section class="link-exchange"><h2 data-zh="交换友链" data-en="Exchange links">交换友链</h2><p><span data-zh="如果你也有个人网站，欢迎通过 " data-en="If you have a personal website, feel free to get in touch by ">如果你也有个人网站，欢迎通过 </span><a href={siteConfig.contacts[1].href} data-zh="邮件" data-en="email">邮件</a><span data-zh=" 和我联系。" data-en="."> 和我联系。</span></p><dl><div><dt data-zh="站名" data-en="Name">站名</dt><dd>方植贤 / Zhixian</dd></div><div><dt data-zh="地址" data-en="URL">地址</dt><dd>{siteConfig.url}</dd></div><div><dt data-zh="简介" data-en="Description">简介</dt><dd data-zh="记录 AI 应用、现代 Web 与产品思考。" data-en="Writing about AI applications, the modern web, and product thinking.">记录 AI 应用、现代 Web 与产品思考。</dd></div></dl></section></div>
+</PageLayout>

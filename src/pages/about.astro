@@ -1,34 +1,26 @@
 ---
-import { getImage } from 'astro:assets';
-import About from '../components/About';
 import PageLayout from '../layouts/PageLayout.astro';
+import SectionHead from '../components/rumo/SectionHead.astro';
+import OrbitAvatar from '../components/rumo/OrbitAvatar.astro';
 import { siteConfig } from '../config/site';
-import avatarSrc from '../assets/avatar.png';
-
-const avatarImage = await getImage({
-  src: avatarSrc,
-  width: 160,
-  height: 160,
-  densities: [1, 2],
-  format: 'webp',
-  layout: 'fixed',
-});
-const avatar = {
-  src: avatarImage.src,
-  srcSet: avatarImage.srcSet.attribute,
-  width: 160,
-  height: 160,
-};
-const personJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: siteConfig.author,
-  url: siteConfig.url,
-  description: siteConfig.description,
-};
 ---
-
-<PageLayout title={`关于 - ${siteConfig.name}`} description={`关于我 - ${siteConfig.author}`} maxWidthClass="max-w-3xl" activePath="/about" mainSpacingClass="pt-28 pb-16 md:pt-32 md:pb-20">
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
-  <About avatar={avatar} />
+<PageLayout title="关于 - 方植贤" description={siteConfig.description} activePath="/about">
+  <SectionHead path="about" title="关于"/>
+  <div class="about-grid"><div class="about-copy">
+    <p data-zh="我是方植贤，全栈开发者与前沿技术探索者。" data-en="I’m Zhixian, a full-stack developer exploring emerging technology.">我是方植贤，全栈开发者与前沿技术探索者。</p>
+    <p data-zh="游走于 AI 应用、现代 Web 与产品思维之间。我享受广泛涉猎与快速学习，也喜欢将想法变成可行的解决方案。" data-en="I work across AI applications, the modern web, and product thinking. I enjoy learning broadly and turning ideas into useful solutions.">游走于 AI 应用、现代 Web 与产品思维之间。我享受广泛涉猎与快速学习，也喜欢将想法变成可行的解决方案。</p>
+    <blockquote data-zh="持续思考人机协同的未来。" data-en="Thinking about the future of human–AI collaboration.">持续思考人机协同的未来。</blockquote>
+    <div class="status-strip"><span>▣ <span data-zh="项目记录" data-en="Project notes">项目记录</span></span><p><span data-zh="记录一个本地素材工作台的原型：" data-en="Notes on a local collection workspace: ">记录一个本地素材工作台的原型：</span><a href="/projects/shiye/" data-zh="拾页 →" data-en="Shiye →">拾页 →</a><span data-zh="。" data-en=".">。</span></p></div>
+    <h2 data-zh="正在建设什么" data-en="What I’m building">正在建设什么</h2>
+    <p data-zh="这个空间记录我的学习轨迹、技术实践与产品思考，也会留下项目背后的取舍。" data-en="This space holds my learning, technical work, product thinking, and the decisions behind my projects.">这个空间记录我的学习轨迹、技术实践与产品思考，也会留下项目背后的取舍。</p>
+    <h2 data-zh="关于我" data-en="More about me">关于我</h2>
+    <p data-zh="你好，我是方植贤，一名对技术与创造充满热忱的开发者。" data-en="Hello, I’m Zhixian, a developer passionate about technology and making things.">你好，我是方植贤，一名对技术与创造充满热忱的开发者。</p>
+    <p data-zh="我的技能树比较“横向生长”——从 React、TypeScript 前端到全栈，从数据分析、机器学习到 AI Agent 应用框架，我享受广泛涉猎与快速学习的过程。我或许不是每个领域的终极专家，但我擅长连接知识点，并用强大的信息搜索与整合能力，将想法转化为可行的解决方案。" data-en="My skills have grown in many directions: from React and TypeScript to full-stack development, data analysis, machine learning, and AI agent frameworks. I enjoy learning broadly, connecting ideas, and turning research into workable solutions.">我的技能树比较“横向生长”——从 React、TypeScript 前端到全栈，从数据分析、机器学习到 AI Agent 应用框架，我享受广泛涉猎与快速学习的过程。我或许不是每个领域的终极专家，但我擅长连接知识点，并用强大的信息搜索与整合能力，将想法转化为可行的解决方案。</p>
+    <p data-zh="我始终保持着对技术浪潮的敏锐。今天，我的兴趣聚焦于大模型所开启的新纪元：无论是用 LangChain 等工具搭建智能体，还是实践 Vibe Coding 这种全新的编程范式，我都在亲身探索并思考，我们应如何与 AI 协同，重塑工作与创造本身。" data-en="I’m especially curious about the possibilities opened by large language models. Whether building agents with LangChain or experimenting with vibe coding, I explore how people and AI can work together to reshape creative work.">我始终保持着对技术浪潮的敏锐。今天，我的兴趣聚焦于大模型所开启的新纪元：无论是用 LangChain 等工具搭建智能体，还是实践 Vibe Coding 这种全新的编程范式，我都在亲身探索并思考，我们应如何与 AI 协同，重塑工作与创造本身。</p>
+    <p data-zh="此外，一种强烈的产品思维与对未来趋势的直觉，常驱使我去构想一些“超前”的产品灵感。虽然并非所有想法都得以实现，但这种从未来回望现在的视角，让我在技术选型与设计时，总能考虑到下一步的演化方向。" data-en="Product thinking and curiosity about future trends often lead me to imagine ideas ahead of their time. Looking back from a possible future helps me consider how design and technology choices might evolve.">此外，一种强烈的产品思维与对未来趋势的直觉，常驱使我去构想一些“超前”的产品灵感。虽然并非所有想法都得以实现，但这种从未来回望现在的视角，让我在技术选型与设计时，总能考虑到下一步的演化方向。</p>
+    <p data-zh="这个博客记录了我的学习轨迹、技术实践与不成体系的思考。如果这里的任何内容引发了你的共鸣或讨论，非常欢迎与我交流。" data-en="This blog records what I learn, build, and think about. If anything here resonates with you, I’d be glad to hear from you.">这个博客记录了我的学习轨迹、技术实践与不成体系的思考。如果这里的任何内容引发了你的共鸣或讨论，非常欢迎与我交流。</p>
+    <p data-zh="中国 · 深圳　/　从事开发 2+ 年" data-en="Shenzhen, China / 2+ years of development">中国 · 深圳　/　从事开发 2+ 年</p>
+    <h2 data-zh="技术与探索" data-en="Technology and exploration">技术与探索</h2><p data-zh="React / TypeScript / Astro / Next.js / Tailwind CSS / Node.js / Figma / UI/UX / AI Agent / LangChain / LangGraph / Vibe Coding / 机器学习 / 数据分析" data-en="React / TypeScript / Astro / Next.js / Tailwind CSS / Node.js / Figma / UI/UX / AI agents / LangChain / LangGraph / Vibe coding / Machine learning / Data analysis">React / TypeScript / Astro / Next.js / Tailwind CSS / Node.js / Figma / UI/UX / AI Agent / LangChain / LangGraph / Vibe Coding / 机器学习 / 数据分析</p>
+    <p><a href={siteConfig.contacts[1].href} data-zh="邮件联系 →" data-en="Get in touch →">邮件联系 →</a></p>
+  </div><OrbitAvatar withName /></div>
 </PageLayout>

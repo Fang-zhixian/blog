@@ -1,0 +1,7 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHead from '../../components/rumo/SectionHead.astro';
+import CollectionRow from '../../components/rumo/CollectionRow.astro';
+import { projects } from '../../data/showcase';
+---
+<PageLayout title="作品 - 方植贤" description="项目与它们背后的问题。" activePath="/projects"><SectionHead path="projects" title="作品" subtitle="项目、原型和它们想解决的问题。"/><div class="wide-list">{projects.map((project, index) => <CollectionRow href={`/projects/${project.id}/`} title={project.title} titleEn={project.titleEn} summary={project.summary} summaryEn={project.summaryEn} date={project.date} status={project.status} statusEn={project.statusEn} index={index} />)}</div></PageLayout>

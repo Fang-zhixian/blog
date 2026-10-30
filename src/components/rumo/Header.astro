@@ -1,0 +1,34 @@
+---
+import Search from '../Search.astro';
+interface Props { activePath: string; }
+const { activePath } = Astro.props;
+const nav = [
+  { href: '/', zh: '首页', en: 'Home' },
+  { href: '/projects/', zh: '作品', en: 'Projects' },
+  { href: '/blog/', zh: '博客', en: 'Blog' },
+  { href: '/notes/', zh: '笔记', en: 'Notes' },
+  { href: '/knowledge/', zh: '知识库', en: 'Knowledge' },
+  { href: '/links/', zh: '友链', en: 'Links' },
+  { href: '/about/', zh: '关于', en: 'About' },
+];
+const isActive = (href: string) => href === '/' ? activePath === '/' : activePath.replace(/\/$/, '').startsWith(href.replace(/\/$/, ''));
+---
+<header id="site-nav" class="rumo-header">
+  <div class="rumo-header-inner">
+    <a href="/" class="rumo-brand" aria-label="方植贤 首页" data-aria-zh="方植贤 首页" data-aria-en="Zhixian home">Zhixian<span aria-hidden="true">.</span></a>
+    <nav class="rumo-nav" aria-label="主导航" data-aria-zh="主导航" data-aria-en="Main navigation">
+      {nav.map((item) => <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} data-zh={item.zh} data-en={item.en}>{item.zh}</a>)}
+    </nav>
+    <div class="rumo-controls">
+      <div class="language-toggle" aria-label="界面语言" data-aria-zh="界面语言" data-aria-en="Interface language"><button type="button" data-lang-switch="en" aria-label="English">English</button><span>/</span><button type="button" data-lang-switch="zh" aria-label="简体中文">简体中文</button></div>
+      <div class="theme-group" aria-label="主题" data-aria-zh="主题" data-aria-en="Theme">
+        <button type="button" data-theme-mode="auto" aria-label="跟随系统" title="跟随系统" data-aria-zh="跟随系统" data-aria-en="Follow system" data-title-zh="跟随系统" data-title-en="Follow system">▣</button>
+        <button type="button" data-theme-mode="light" aria-label="浅色" title="浅色" data-aria-zh="浅色" data-aria-en="Light" data-title-zh="浅色" data-title-en="Light">☼</button>
+        <button type="button" data-theme-mode="dark" aria-label="深色" title="深色" data-aria-zh="深色" data-aria-en="Dark" data-title-zh="深色" data-title-en="Dark">☾</button>
+      </div>
+      <div class="header-search"><Search /></div>
+      <button type="button" class="terminal-open" data-terminal-open aria-label="打开终端" title="打开终端" data-aria-zh="打开终端" data-aria-en="Open terminal" data-title-zh="打开终端" data-title-en="Open terminal">›_</button>
+      <details class="rumo-mobile-nav"><summary aria-label="打开菜单" data-aria-zh="打开菜单" data-aria-en="Open menu">☰</summary><nav aria-label="移动端导航" data-aria-zh="移动端导航" data-aria-en="Mobile navigation">{nav.map((item) => <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} data-zh={item.zh} data-en={item.en}>{item.zh}</a>)}<button type="button" data-mobile-search data-zh="全站搜索" data-en="Search the site">全站搜索</button><div class="mobile-settings"><p data-zh="界面语言" data-en="Interface language">界面语言</p><div class="mobile-setting-options"><button type="button" data-lang-switch="zh" aria-label="简体中文">中文</button><button type="button" data-lang-switch="en" aria-label="English">English</button></div><p data-zh="主题" data-en="Theme">主题</p><div class="mobile-setting-options"><button type="button" data-theme-mode="auto" data-zh="跟随系统" data-en="System">跟随系统</button><button type="button" data-theme-mode="light" data-zh="浅色" data-en="Light">浅色</button><button type="button" data-theme-mode="dark" data-zh="深色" data-en="Dark">深色</button></div></div></nav></details>
+    </div>
+  </div>
+</header>

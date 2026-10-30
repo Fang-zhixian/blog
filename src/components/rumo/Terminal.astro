@@ -1,0 +1,74 @@
+---
+import { getBlogPosts } from '../../utils/content';
+import { getAllPostSummaries } from '../../utils/posts';
+const posts = getAllPostSummaries(await getBlogPosts());
+const glyphs: Record<string, string[]> = {
+  Z: ['11111','00001','00010','00100','01000','10000','11111'],
+  H: ['10001','10001','10001','11111','10001','10001','10001'],
+  I: ['11111','00100','00100','00100','00100','00100','11111'],
+  X: ['10001','10001','01010','00100','01010','10001','10001'],
+  A: ['01110','10001','10001','11111','10001','10001','10001'],
+  N: ['10001','11001','11001','10101','10011','10011','10001'],
+};
+const letters = 'ZHIXIAN'.split('');
+const sections = [
+  { cmd: 'home', label: '从这里开始', en: 'Start here' }, { cmd: 'projects', label: '正在做的东西', en: 'Things I make' },
+  { cmd: 'blog', label: '完整的文章', en: 'Long-form writing' }, { cmd: 'notes', label: '沿途的小观察', en: 'Small observations' },
+  { cmd: 'knowledge', label: '让学过的东西有处可寻', en: 'Things worth keeping' }, { cmd: 'links', label: '朋友们的站点', en: 'Friends and sites' },
+  { cmd: 'about', label: '关于我', en: 'About me' },
+];
+---
+<section class="terminal-overlay" data-terminal data-terminal-posts={JSON.stringify(posts.map(({ slug, title }) => ({ slug, title })))} aria-label="个人空间终端" data-aria-zh="个人空间终端" data-aria-en="Personal space terminal">
+  <script is:inline>
+    (() => {
+      let mode = 'auto';
+      try {
+        const saved = localStorage.getItem('rumo-preview-tty-mode');
+        const legacy = sessionStorage.getItem('rumo-preview-tty');
+        mode = ['auto', 'light', 'dark'].includes(saved) ? saved : legacy === 'light' ? 'light' : 'auto';
+      } catch { /* Following the document works when storage is unavailable. */ }
+      const light = mode === 'light' || (mode === 'auto' && !document.documentElement.classList.contains('dark'));
+      document.currentScript?.parentElement?.classList.toggle('terminal-light', light);
+    })();
+  </script>
+  <div class="terminal-scanlines" aria-hidden="true"></div>
+  <div class="terminal-wrap">
+    <div class="terminal-top-controls">
+      <button type="button" data-lang-switch="en">EN</button><button type="button" data-lang-switch="zh">中文</button>
+      <button type="button" data-tty-theme="auto" aria-label="终端主题跟随正文" title="终端主题跟随正文" data-aria-zh="终端主题跟随正文" data-aria-en="Match the site theme" data-title-zh="终端主题跟随正文" data-title-en="Match the site theme" data-zh="跟随" data-en="Auto">跟随</button><button type="button" data-tty-theme="dark" aria-label="深色终端" data-aria-zh="深色终端" data-aria-en="Dark terminal">☾</button><button type="button" data-tty-theme="light" aria-label="浅色终端" data-aria-zh="浅色终端" data-aria-en="Light terminal">☼</button>
+    </div>
+    <div class="terminal-masthead">
+      <div>
+        <svg class="terminal-wordmark" viewBox="0 0 420 70" role="img" aria-label="ZHIXIAN">
+          <defs><linearGradient id="terminal-ice" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e8edf0"/><stop offset=".58" stop-color="#b7cfdb"/><stop offset="1" stop-color="#91bfd4"/></linearGradient></defs>
+          {letters.map((letter, index) => glyphs[letter].map((line, row) => line.split('').map((pixel, col) => pixel === '1' && <rect x={index * 60 + col * 10} y={row * 10} width="10" height="10" fill="url(#terminal-ice)" />)))}
+        </svg>
+        <p class="terminal-intro" data-zh="&gt; 方植贤 · Zhixian — 在这里学习、写作、慢慢创造。" data-en="&gt; Zhixian — A place to learn, write, and build.">&gt; 方植贤 · Zhixian — 在这里学习、写作、慢慢创造。</p>
+        <p class="terminal-deeplink" data-terminal-path></p>
+      </div>
+      <button type="button" class="terminal-enter" data-terminal-enter><strong data-zh="进入网站" data-en="Enter the space">进入网站</strong><small data-zh="Enter the space ↵" data-en="Press Enter ↵">Enter the space ↵</small><span aria-hidden="true">→</span></button>
+    </div>
+    <div class="terminal-panel">
+      <div class="terminal-art-column">
+        <div class="terminal-art"><canvas data-terminal-orbit width="800" height="360" aria-label="由点组成的旋转轨道" data-aria-zh="由点组成的旋转轨道" data-aria-en="Rotating orbit made of dots"></canvas></div>
+        <div class="terminal-art-caption"><span data-zh="zhixian · 本地会话" data-en="zhixian · local session">zhixian · 本地会话</span><button type="button" class="terminal-like" data-like-site aria-pressed="false"><span aria-hidden="true">♥</span> <span data-like-label>喜欢这个小站</span> <span data-like-count>…</span></button></div>
+      </div>
+      <div class="terminal-menu">
+        <h2 data-zh="Zhixian 的空间" data-en="Zhixian's space">Zhixian 的空间</h2>
+        <p class="terminal-subheading" data-zh="▾ 栏目" data-en="▾ Sections">▾ 栏目</p>
+        <div class="terminal-section-grid">{sections.map((section) => <button type="button" data-terminal-command={section.cmd}><span class="terminal-chevron">›</span><span>{section.cmd}</span><small data-zh={section.label} data-en={section.en}>{section.label}</small></button>)}</div>
+        <p class="terminal-subheading terminal-try" data-zh="▸ 试试" data-en="▸ Try">▸ 试试</p>
+        <div class="terminal-shortcuts">{['help', 'whoami', 'latest', 'ls', 'like'].map((cmd) => <button type="button" data-terminal-command={cmd}>{cmd}</button>)}</div>
+      </div>
+    </div>
+    <div class="terminal-output" data-terminal-output aria-live="polite">
+      <p data-zh="[ OK ] 打开个人空间" data-en="[ OK ] Opening a personal space">[ OK ] 打开个人空间</p><p data-zh="[ OK ] 整理文字与作品入口" data-en="[ OK ] Gathering words and works">[ OK ] 整理文字与作品入口</p><p data-zh="[ OK ] 准备好了，随时进入" data-en="[ OK ] Ready when you are">[ OK ] 准备好了，随时进入</p>
+    </div>
+    <div class="terminal-status"><span><i></i> <span data-zh="就绪" data-en="ready">就绪</span></span><span data-zh="zh" data-en="en">zh</span><span>tty1</span><time data-terminal-time></time><span data-site-visits>访问 … 次</span><span class="terminal-current-path">~/zhixian-space</span></div><p class="metrics-status" data-metrics-status role="status" hidden></p>
+    <form class="terminal-command-form" data-terminal-form>
+      <label for="terminal-command" aria-label="终端命令" data-aria-zh="终端命令" data-aria-en="Terminal command">❯</label>
+      <input id="terminal-command" data-terminal-input data-placeholder-zh="输入 help，或直接 Enter 进入" data-placeholder-en="Type help, or press Enter to continue" data-aria-zh="终端命令" data-aria-en="Terminal command" autocomplete="off" spellcheck="false" placeholder="输入 help，或直接 Enter 进入" />
+    </form>
+    <div class="terminal-bottom"><div>{['help', 'whoami', 'blog', 'notes'].map((cmd) => <button type="button" data-terminal-command={cmd}>{cmd}</button>)}</div><button type="button" class="terminal-skip" data-terminal-enter data-zh="跳过介绍" data-en="Skip intro">跳过介绍</button></div>
+  </div>
+</section>

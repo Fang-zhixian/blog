@@ -2,28 +2,15 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import { siteConfig } from '../config/site';
 ---
-
-<PageLayout title={`隐私说明 - ${siteConfig.name}`} description="本站如何处理访问数据" maxWidthClass="max-w-3xl">
-  <article class="prose prose-lg prose-gray dark:prose-invert max-w-none">
-    <h1>隐私说明</h1>
-    <p>
-      这是个人博客，没有账号系统，也不会出售或对外共享你的个人信息。
-    </p>
-    <h2>本站收集什么</h2>
-    <p>
-      页面由静态文件托管。为了解站点性能，接入了 Vercel Speed Insights，可能收集匿名的性能与访问指标（例如页面加载时间、地区聚合数据）。
-    </p>
-    <h2>本站不收集什么</h2>
-    <ul>
-      <li>不要求注册或登录</li>
-      <li>不保存评论或表单提交</li>
-      <li>不使用广告或第三方追踪像素</li>
-    </ul>
-    <h2>联系</h2>
-    <p>
-      如有隐私相关问题，请通过
-      <a href={siteConfig.contacts.find((contact) => contact.platform === 'email')?.href}>邮件</a>
-      联系我。
-    </p>
+<PageLayout title={`隐私说明 - ${siteConfig.name}`} description="本站如何处理访问和点赞数据" maxWidthClass="max-w-3xl">
+  <article class="prose prose-lg prose-gray dark:prose-invert max-w-none article-prose">
+    <h1 data-zh="隐私说明" data-en="Privacy">隐私说明</h1>
+    <h2 data-zh="访问、浏览与点赞" data-en="Visits, views, and likes">访问、浏览与点赞</h2>
+    <p data-zh="为了统计站点访问、文章浏览和点赞，浏览器会生成随机的访客和会话标识。站点访问和每篇文章浏览在一次会话的 24 小时内各计一次；点赞按浏览器标识去重，也可以取消。清除浏览器存储会生成新的标识。" data-en="Your browser generates random visitor and session identifiers to count site visits, article views, and likes. A site visit and each article view count once within a 24-hour session window. Likes are deduplicated per browser and can be removed. Clearing browser storage creates new identifiers.">为了统计站点访问、文章浏览和点赞，浏览器会生成随机的访客和会话标识。站点访问和每篇文章浏览在一次会话的 24 小时内各计一次；点赞按浏览器标识去重，也可以取消。清除浏览器存储会生成新的标识。</p>
+    <p data-zh="汇总数字和点赞标识保存在 Upstash；用于去重的会话标识在 24 小时后过期。为限制异常请求，服务会短暂保存由网络地址生成的不可逆标识，不把原始网络地址写入统计数据库。" data-en="Aggregate counts and like identifiers are stored by Upstash. Session identifiers used for deduplication expire after 24 hours. To limit abusive requests, the service briefly stores an irreversible identifier derived from the network address; the raw address is not written to the statistics database.">汇总数字和点赞标识保存在 Upstash；用于去重的会话标识在 24 小时后过期。为限制异常请求，服务会短暂保存由网络地址生成的不可逆标识，不把原始网络地址写入统计数据库。</p>
+    <p data-zh="本站由 Vercel 托管并使用其性能监测服务。Vercel 和 Upstash 可能按其各自的隐私政策处理网络地址和技术日志。" data-en="This site is hosted by Vercel and uses its performance monitoring. Vercel and Upstash may process network addresses and technical logs according to their own privacy policies.">本站由 Vercel 托管并使用其性能监测服务。Vercel 和 Upstash 可能按其各自的隐私政策处理网络地址和技术日志。</p>
+    <p><a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel Privacy Policy ↗</a> · <a href="https://upstash.com/trust/privacy.pdf" target="_blank" rel="noopener noreferrer">Upstash Privacy Policy ↗</a></p>
+    <h2 data-zh="联系" data-en="Contact">联系</h2>
+    <p><span data-zh="如有隐私相关问题，请通过 " data-en="For privacy questions, please contact me by ">如有隐私相关问题，请通过 </span><a href={siteConfig.contacts.find((contact) => contact.platform === 'email')?.href} data-zh="邮件" data-en="email">邮件</a><span data-zh=" 联系我。" data-en="."> 联系我。</span></p>
   </article>
 </PageLayout>

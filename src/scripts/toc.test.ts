@@ -24,9 +24,9 @@ describe('article table of contents', () => {
   beforeEach(() => {
     const items = ['first', 'long', 'last'].map((id) => `<li><a data-toc-id="${id}" href="#${id}">${id}</a></li>`).join('');
     document.body.innerHTML = `<nav data-toc><ol>${items}</ol></nav>
-      <button data-toc-open>目录</button><dialog data-toc-dialog><button data-toc-close>关闭</button>
+      <button data-toc-open>目录</button><dialog data-toc-dialog><button data-toc-close>关闭</button><button data-toc-top>回到顶部</button>
       <div data-toc-list><ol>${items}</ol></div></dialog>
-      <main><h2 id="first">first</h2><h2 id="long">long section</h2><h2 id="last">last</h2></main>`;
+      <main id="main-content" tabindex="-1"><h2 id="first">first</h2><h2 id="long">long section</h2><h2 id="last">last</h2></main>`;
     dialog = document.querySelector('dialog')!;
     button = document.querySelector('[data-toc-open]')!;
     list = document.querySelector('[data-toc-list]')!;
@@ -107,6 +107,16 @@ describe('article table of contents', () => {
     expect(dialog.open).toBe(true);
     dialog.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: 20, clientY: 200 }));
     expect(dialog.open).toBe(false);
+  });
+
+  it('returns to the top from the mobile directory without leaving the sheet open', () => {
+    const pageScroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    dispose = initToc();
+    button.click();
+    dialog.querySelector<HTMLButtonElement>('[data-toc-top]')!.click();
+    expect(dialog.open).toBe(false);
+    expect(pageScroll).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    expect(document.activeElement).toBe(document.querySelector('#main-content'));
   });
 
   it('keeps native anchor navigation and moves keyboard focus to the selected heading', () => {

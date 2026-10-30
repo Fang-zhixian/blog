@@ -1,5 +1,6 @@
 import type { BlogEntry, PostSummary, PostCategory } from '../types/blog';
 import { POST_CATEGORIES } from '../content/post-schema.mjs';
+import { englishPostSummaries } from '../data/post-summaries-en';
 
 export const POSTS_PER_PAGE = 6;
 
@@ -14,12 +15,22 @@ export function sortPostsByDate(posts: BlogEntry[]): BlogEntry[] {
   return [...posts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
+/** Hide only an exact first-paragraph duplicate; leave the article and its metadata untouched. */
+export function descriptionRepeatsFirstParagraph(description: string, body: string): boolean {
+  const normalize = (value: string) => value.replace(/\s+/g, ' ').trim();
+  const firstParagraph = body.trimStart().split(/\r?\n[\t ]*\r?\n/, 1)[0] || '';
+  const summary = normalize(description);
+  return summary.length > 0 && summary === normalize(firstParagraph);
+}
+
 export function toPostSummary(post: BlogEntry): PostSummary {
   const tags = post.data.tags ?? [];
   return {
     slug: post.slug,
     title: post.data.title,
     excerpt: post.data.description,
+    titleEn: englishPostSummaries[post.slug]?.title,
+    excerptEn: englishPostSummaries[post.slug]?.summary,
     date: post.data.pubDate.toISOString().split('T')[0],
     tag: tags[0] || '文章',
     tags,
@@ -129,14 +140,16 @@ export function getRelatedPostSummaries(
   posts: BlogEntry[],
   current: BlogEntry,
   limit = 3,
+  excludedSlugs: readonly string[] = [],
 ): PostSummary[] {
   const currentTags = new Set(current.data.tags ?? []);
+  const excluded = new Set(excludedSlugs);
   if (currentTags.size === 0) {
     return [];
   }
 
   return posts
-    .filter((post) => post.slug !== current.slug)
+    .filter((post) => post.slug !== current.slug && !excluded.has(post.slug))
     .map((post) => ({
       post,
       score: (post.data.tags ?? []).filter((tag) => currentTags.has(tag)).length,

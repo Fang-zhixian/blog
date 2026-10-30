@@ -1,0 +1,13 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '../../assets/avatar.png';
+interface Props { withName?: boolean; }
+const { withName = false } = Astro.props;
+---
+<div class:list={['orbit-avatar', { 'orbit-avatar--named': withName }]}>
+  <svg class="avatar-orbits" viewBox="0 0 280 110" aria-hidden="true">
+    {[95, 110, 125, 138, 150, 165, 180, 195, 210].map((width, index) => <ellipse cx="140" cy="55" rx={width / 2} ry={18 + index * 3} fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="1 4" opacity={0.64 - index * 0.055} />)}
+  </svg>
+  <div class="avatar-frame"><Image src={avatar} alt="方植贤的头像" width={160} height={160} format="webp" /></div>
+  {withName ? <div class="avatar-caption"><strong>方植贤 / Zhixian</strong><span>@Nothings2Seeyeyeye</span><a href="https://github.com/Nothings2Seeyeyeye" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div> : <span class="avatar-handle">@Nothings2Seeyeyeye</span>}
+</div>

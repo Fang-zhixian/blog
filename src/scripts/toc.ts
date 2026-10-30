@@ -3,6 +3,7 @@ export function initToc(root: ParentNode = document) {
   const desktopNav = root.querySelector<HTMLElement>('nav[data-toc]');
   const openButton = root.querySelector<HTMLButtonElement>('[data-toc-open]');
   const closeButton = root.querySelector<HTMLButtonElement>('[data-toc-close]');
+  const topButton = root.querySelector<HTMLButtonElement>('[data-toc-top]');
   const dialog = root.querySelector<HTMLDialogElement>('[data-toc-dialog]');
   const list = dialog?.querySelector<HTMLElement>('[data-toc-list]');
   if (!openButton || !dialog || !list || openButton.dataset.ready === 'true') return;
@@ -69,6 +70,11 @@ export function initToc(root: ParentNode = document) {
 
   openButton.addEventListener('click', open, { signal });
   closeButton?.addEventListener('click', () => close(), { signal });
+  topButton?.addEventListener('click', () => {
+    close(true);
+    document.querySelector<HTMLElement>('#main-content')?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }, { signal });
   dialog.addEventListener('close', () => {
     openButton.setAttribute('aria-expanded', String(dialog.open));
   }, { signal });
