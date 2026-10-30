@@ -1,6 +1,7 @@
 /** Keep section navigation native while managing the mobile directory sheet. */
 export function initToc(root: ParentNode = document) {
   const desktopNav = root.querySelector<HTMLElement>('nav[data-toc]');
+  const desktopList = desktopNav?.querySelector<HTMLElement>('[data-toc-desktop-list]') ?? desktopNav;
   const openButton = root.querySelector<HTMLButtonElement>('[data-toc-open]');
   const closeButton = root.querySelector<HTMLButtonElement>('[data-toc-close]');
   const topButton = root.querySelector<HTMLButtonElement>('[data-toc-top]');
@@ -13,7 +14,7 @@ export function initToc(root: ParentNode = document) {
   const headings = ids.map((id) => document.getElementById(id)).filter((heading): heading is HTMLElement => Boolean(heading));
   const controller = new window.AbortController();
   const { signal } = controller;
-  const desktop = window.matchMedia?.('(min-width: 1280px)');
+  const desktop = window.matchMedia?.('(min-width: 1100px)');
   let frame: number | undefined;
   let activeId: string | undefined;
   let restoreHeadingFocus: (() => void) | undefined;
@@ -33,18 +34,19 @@ export function initToc(root: ParentNode = document) {
     if (!headings.length) return;
     // Track the section at the reading edge, including long sections between headings.
     const readingEdge = Number.parseFloat(window.getComputedStyle(headings[0]).scrollMarginTop) || 128;
-    let current = headings[0];
+    // The introduction is not part of the first section; leave the list unselected until it is reached.
+    let current: HTMLElement | undefined;
     for (const heading of headings) {
       if (heading.getBoundingClientRect().top > readingEdge + 1) break;
       current = heading;
     }
-    if (current.id === activeId) return;
-    activeId = current.id;
+    if (current?.id === activeId) return;
+    activeId = current?.id;
     for (const link of links) {
-      if (link.dataset.tocId === activeId) link.setAttribute('aria-current', 'location');
+      if (activeId && link.dataset.tocId === activeId) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     }
-    if (desktop?.matches) revealLink(desktopNav);
+    if (desktop?.matches) revealLink(desktopList);
   };
   const scheduleUpdate = () => {
     if (frame !== undefined) return;

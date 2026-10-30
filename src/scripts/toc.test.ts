@@ -69,6 +69,10 @@ describe('article table of contents', () => {
 
   it('tracks the reading edge inside long sections and coalesces scroll work into a frame', () => {
     dispose = initToc();
+    expect(links().filter((link) => link.getAttribute('aria-current') === 'location')).toHaveLength(0);
+    positions = [110, 1400, 4900];
+    window.dispatchEvent(new Event('scroll'));
+    flushFrame();
     expect(links().filter((link) => link.getAttribute('aria-current') === 'location')).toHaveLength(2);
     expect(mobileLink('first')).toHaveAttribute('aria-current', 'location');
     positions = [-1600, -340, 3160];
@@ -82,6 +86,10 @@ describe('article table of contents', () => {
     window.dispatchEvent(new Event('scroll'));
     flushFrame();
     expect(mobileLink('last')).toHaveAttribute('aria-current', 'location');
+    positions = [240, 1500, 5000];
+    window.dispatchEvent(new Event('scroll'));
+    flushFrame();
+    expect(links().filter((link) => link.hasAttribute('aria-current'))).toHaveLength(0);
   });
 
   it('reveals the current entry within the sheet without scrolling the article', () => {

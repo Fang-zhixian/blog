@@ -9,28 +9,34 @@ interface Props {
 
 const { headings } = Astro.props;
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const tocGroups: Array<{ heading: (typeof tocHeadings)[number]; children: typeof tocHeadings }> = [];
+for (const heading of tocHeadings) {
+  const parent = tocGroups.at(-1);
+  if (heading.depth === 3 && parent?.heading.depth === 2) parent.children.push(heading);
+  else tocGroups.push({ heading, children: [] });
+}
 ---
 
 {tocHeadings.length > 0 && (
   <>
-    <nav data-toc aria-label="文章目录" data-aria-zh="文章目录" data-aria-en="Article contents" class="hidden xl:block sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto">
-      <p class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4" data-zh="目录" data-en="Contents">目录</p>
-      <ol class="border-l border-gray-200 dark:border-gray-800">
-        {tocHeadings.map((heading) => (
-          <li>
-            <a
-              href={`#${heading.slug}`}
-              data-toc-id={heading.slug}
-              class:list={[
-                'block border-l-2 -ml-px py-1.5 text-sm leading-snug transition-colors border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200',
-                heading.depth === 3 ? 'pl-6' : 'pl-4',
-              ]}
-            >
-              {heading.text}
-            </a>
-          </li>
-        ))}
-      </ol>
+    <nav data-toc aria-label="本文目录" data-aria-zh="本文目录" data-aria-en="On this page" class="toc-desktop hidden xl:block">
+      <div data-toc-desktop-list class="toc-desktop-list">
+        <p class="toc-desktop-title" data-zh="本文目录" data-en="On this page">本文目录</p>
+        <ol>
+          {tocGroups.map(({ heading, children }) => (
+            <li class:list={[{ 'toc-subheading': heading.depth === 3 }]}>
+              <a href={`#${heading.slug}`} data-toc-id={heading.slug}>{heading.text}</a>
+              {children.length > 0 && (
+                <ol>
+                  {children.map((child) => (
+                    <li class="toc-subheading"><a href={`#${child.slug}`} data-toc-id={child.slug}>{child.text}</a></li>
+                  ))}
+                </ol>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
     </nav>
 
     <dialog
